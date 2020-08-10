@@ -1,4 +1,4 @@
-package camp.nextstep.subway
+package nextstep.subway
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
