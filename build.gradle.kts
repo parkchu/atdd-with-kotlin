@@ -42,6 +42,11 @@ dependencies {
 	}
 }
 
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
