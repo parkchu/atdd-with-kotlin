@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui
 
+import mu.KotlinLogging
 import nextstep.subway.station.domain.StationRepository
 import nextstep.subway.station.dto.StationCreateRequest
 import nextstep.subway.station.dto.StationResponse
@@ -9,15 +10,17 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
+val logger = KotlinLogging.logger { }
+
 @RestController
 class StationController @Autowired constructor(
         private val stationRepository: StationRepository
 ) {
     @PostMapping("/stations")
-    fun createStation(@RequestBody view: StationCreateRequest): ResponseEntity<*> {
-        val station = view.toStation()
+    fun createStation(@RequestBody request: StationCreateRequest): ResponseEntity<*> {
+        logger.debug { "StationCreateRequest : $request" }
         return try {
-            val persistStation = stationRepository.save(station)
+            val persistStation = stationRepository.save(request.toStation())
             ResponseEntity.created(URI.create("/stations/" + persistStation.id)).body(StationResponse.of(persistStation))
         } catch (e: Exception) {
             ResponseEntity.badRequest().build<Void>()

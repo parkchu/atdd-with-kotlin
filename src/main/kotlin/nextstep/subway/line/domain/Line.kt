@@ -7,17 +7,25 @@ import javax.persistence.*
 @Entity
 class Line(
         @Column(unique = true, nullable = false)
-        val name: String,
+        var name: String,
 
-        val color: String,
+        var color: String,
 
-        val startTime: LocalTime,
+        var startTime: LocalTime,
 
-        val endTime: LocalTime,
+        var endTime: LocalTime,
 
-        val intervalTime: Int,
+        var intervalTime: Int,
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
-) : BaseEntity()
+) : BaseEntity() {
+    fun update(updateLine: Line) {
+        this.name = updateLine.name
+        this.color = updateLine.color
+        this.startTime = updateLine.startTime
+        this.endTime = updateLine.endTime
+        this.intervalTime = updateLine.intervalTime
+    }
+}

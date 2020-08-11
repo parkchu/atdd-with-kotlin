@@ -1,5 +1,6 @@
 package nextstep.subway.line.ui
 
+import mu.KotlinLogging
 import nextstep.subway.line.application.LineService
 import nextstep.subway.line.domain.Line
 import nextstep.subway.line.dto.LineRequest
@@ -10,11 +11,14 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
+val logger = KotlinLogging.logger { }
+
 @RestController
 @RequestMapping("/lines")
 class LineController @Autowired constructor(val lineService: LineService) {
     @PostMapping
     fun createLine(@RequestBody lineRequest: LineRequest): ResponseEntity<LineResponse> {
+        logger.debug { "LineRequest : $lineRequest" }
         val line: Line = lineService.saveLine(lineRequest)
         return ResponseEntity.created(URI.create("/lines/" + line.id)).body(LineResponse.of(line))
     }
@@ -27,6 +31,12 @@ class LineController @Autowired constructor(val lineService: LineService) {
     @GetMapping("/{id}")
     fun findLineById(@PathVariable id: Long): ResponseEntity<LineResponse> {
         return ResponseEntity.ok(lineService.findLineById(id))
+    }
+
+    @PutMapping("/{id}")
+    fun updateLine(@PathVariable id: Long, @RequestBody lineUpdateRequest: LineRequest): ResponseEntity<Void> {
+        lineService.updateLine(id, lineUpdateRequest)
+        return ResponseEntity.ok().build()
     }
 
     @DeleteMapping("/{id}")

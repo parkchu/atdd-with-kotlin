@@ -29,6 +29,11 @@ class LineService @Autowired constructor(val lineRepository: LineRepository) {
                 .orElseThrow{ RuntimeException() }
     }
 
+    fun updateLine(id: Long, lineUpdateRequest: LineRequest) {
+        val persistLine = lineRepository.findById(id).orElseThrow { RuntimeException() }
+        persistLine.update(lineUpdateRequest.toLine())
+    }
+
     fun deleteLineById(id: Long) {
         lineRepository.deleteById(id)
     }
