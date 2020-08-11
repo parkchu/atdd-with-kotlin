@@ -19,7 +19,7 @@ class DatabaseCleanup: InitializingBean {
     var tableNames: List<String>? = null
 
     override fun afterPropertiesSet() {
-        tableNames = entityManager!!.metamodel.entities
+        tableNames = entityManager.metamodel.entities
                 .filter { e: EntityType<*> -> e.javaType.getAnnotation(Entity::class.java) != null }
                 .map { e: EntityType<*> -> CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, e.name) }
     }
