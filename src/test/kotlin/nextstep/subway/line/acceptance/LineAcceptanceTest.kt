@@ -78,7 +78,15 @@ class LineAcceptanceTest : AcceptanceTest() {
         params["startTime"] = LocalTime.of(5, 30).format(DateTimeFormatter.ISO_TIME)
         params["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
         params["intervalTime"] = "5"
-        val createResponse = RestAssured.given().log().all().contentType(MediaType.APPLICATION_JSON_VALUE).body(params).`when`().post("/lines").then().log().all().extract()
+        val createResponse = RestAssured
+                .given()
+                    .log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(params)
+                .`when`()
+                    .post("/lines")
+                .then()
+                    .log().all().extract()
 
         // when
         // 지하철_노선_조회_요청
