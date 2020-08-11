@@ -14,7 +14,6 @@ import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_생
 import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_제거_요청
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.util.*
 
 @DisplayName("지하철역 관련 기능")
 class StationAcceptanceTest : AcceptanceTest() {
@@ -54,7 +53,7 @@ class StationAcceptanceTest : AcceptanceTest() {
 
         // then
         지하철역_목록_응답됨(response)
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2))
+        지하철역_목록_포함됨(response, listOf(createResponse1, createResponse2))
     }
 
     @DisplayName("지하철역을 제거한다.")

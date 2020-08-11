@@ -56,7 +56,8 @@ object StationAcceptanceStep {
 
     fun 지하철역_목록_포함됨(response: ExtractableResponse<Response>, createdResponses: List<ExtractableResponse<Response>>) {
         val expectedLineIds = createdResponses.map { extractLineId(it) }
-        val resultLineIds = response.jsonPath().getList(".", StationResponse::class.java)
+        val resultLineIds = response.jsonPath()
+                .getList(".", StationResponse::class.java)
                 .map { it: StationResponse -> it.id }
         assertThat(resultLineIds).containsAll(expectedLineIds)
     }
