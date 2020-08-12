@@ -4,13 +4,17 @@ import nextstep.subway.line.domain.Line
 import nextstep.subway.line.domain.LineRepository
 import nextstep.subway.line.dto.LineRequest
 import nextstep.subway.line.dto.LineResponse
+import nextstep.subway.station.domain.StationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 @Transactional
-class LineService @Autowired constructor(val lineRepository: LineRepository) {
+class LineService @Autowired constructor(
+        val lineRepository: LineRepository,
+        val stationRepository: StationRepository
+) {
     fun saveLine(request: LineRequest): Line {
         return lineRepository.save(request.toLine())
     }
