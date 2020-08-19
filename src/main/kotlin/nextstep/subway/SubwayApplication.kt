@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class SubwayApplication
 
 fun main(args: Array<String>) {
-	runApplication<SubwayApplication>(*args)
+    runApplication<SubwayApplication>(*args)
 }
