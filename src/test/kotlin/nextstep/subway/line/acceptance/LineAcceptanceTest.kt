@@ -114,8 +114,7 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // when
         // 지하철_노선_목록_조회_요청
-        val uri = "/lines"
-        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
+        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()["/lines"].then().log().all().extract()
 
         // then
         // 지하철_노선_목록_응답됨
@@ -161,12 +160,41 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun updateLine() {
         // given
         // 지하철_노선_등록되어_있음
+        val params: MutableMap<String, String> = HashMap()
+        params["name"] = "피카츄선"
+        params["color"] = "bg-yellow-600"
+        params["startTime"] = LocalTime.of(10, 30).format(DateTimeFormatter.ISO_TIME)
+        params["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
+        params["intervalTime"] = "10"
+        val lineResponse = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params).`when`()
+                .post("/lines")
+                .then()
+                .log().all().extract()
 
         // when
         // 지하철_노선_수정_요청
+        params["name"] = "라이츄선"
+        params["color"] = "bg-orange-600"
+        val uri = lineResponse.header("Location")
+        val updateResponse = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params).`when`()
+                .put(uri)
+                .then()
+                .log().all().extract()
 
         // then
         // 지하철_노선_수정됨
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
+        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract().`as`(LineResponse::class.java)
+        assertThat(response.name).isEqualTo("라이츄선")
+        assertThat(response.color).isEqualTo("bg-orange-600")
     }
 
     @DisplayName("지하철 노선을 제거한다.")
