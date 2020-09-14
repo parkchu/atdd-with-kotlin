@@ -26,12 +26,12 @@ class LineAcceptanceTest : AcceptanceTest() {
         params["intervalTime"] = "5"
         val response = RestAssured
                 .given()
-                    .log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params).`when`()
-                    .post("/lines")
+                .post("/lines")
                 .then()
-                    .log().all().extract()
+                .log().all().extract()
 
         // then
         // 지하철_노선_생성됨
@@ -44,12 +44,34 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun createLine2() {
         // given
         // 지하철_노선_등록되어_있음
+        val params: MutableMap<String, String> = HashMap()
+        params["name"] = "신분당선"
+        params["color"] = "bg-red-600"
+        params["startTime"] = LocalTime.of(5, 30).format(DateTimeFormatter.ISO_TIME)
+        params["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
+        params["intervalTime"] = "5"
+        RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params).`when`()
+                .post("/lines")
 
         // when
         // 지하철_노선_생성_요청
+        val response = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params).`when`()
+                .post("/lines")
+                .then()
+                .log().all().extract()
 
         // then
         // 지하철_노선_생성_실패됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.header("Location")).isBlank()
     }
 
     @Test
@@ -80,13 +102,13 @@ class LineAcceptanceTest : AcceptanceTest() {
         params["intervalTime"] = "5"
         val createResponse = RestAssured
                 .given()
-                    .log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(params)
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
                 .`when`()
-                    .post("/lines")
+                .post("/lines")
                 .then()
-                    .log().all().extract()
+                .log().all().extract()
 
         // when
         // 지하철_노선_조회_요청
