@@ -202,11 +202,30 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun deleteLine() {
         // given
         // 지하철_노선_등록되어_있음
+        val params: MutableMap<String, String> = HashMap()
+        params["name"] = "피카츄선"
+        params["color"] = "bg-yellow-600"
+        params["startTime"] = LocalTime.of(10, 30).format(DateTimeFormatter.ISO_TIME)
+        params["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
+        params["intervalTime"] = "10"
+        val lineResponse = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params).`when`()
+                .post("/lines")
+                .then()
+                .log().all().extract()
 
         // when
         // 지하철_노선_제거_요청
+        val uri = lineResponse.header("Location")
+        val response = RestAssured.delete(uri).then().log().all().extract()
 
         // then
         // 지하철_노선_삭제됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
+        val lineListResponse = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()["/lines"].then().log().all().extract()
+        assertThat(lineListResponse.`as`(Array<LineResponse>::class.java)).isEmpty()
     }
 }
