@@ -80,13 +80,48 @@ class LineAcceptanceTest : AcceptanceTest() {
         // given
         // 지하철_노선_등록되어_있음
         // 지하철_노선_등록되어_있음
+        val params1: MutableMap<String, String> = HashMap()
+        params1["name"] = "신분당선"
+        params1["color"] = "bg-red-600"
+        params1["startTime"] = LocalTime.of(5, 30).format(DateTimeFormatter.ISO_TIME)
+        params1["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
+        params1["intervalTime"] = "5"
+        val lineResponse1 = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params1).`when`()
+                .post("/lines")
+                .then()
+                .log().all().extract()
+                .body().`as`(LineResponse::class.java)
+
+        val params2: MutableMap<String, String> = HashMap()
+        params2["name"] = "피카츄선"
+        params2["color"] = "bg-yellow-600"
+        params2["startTime"] = LocalTime.of(10, 30).format(DateTimeFormatter.ISO_TIME)
+        params2["endTime"] = LocalTime.of(23, 30).format(DateTimeFormatter.ISO_TIME)
+        params2["intervalTime"] = "10"
+        val lineResponse2 = RestAssured
+                .given()
+                .log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params2).`when`()
+                .post("/lines")
+                .then()
+                .log().all().extract()
+                .body().`as`(LineResponse::class.java)
 
         // when
         // 지하철_노선_목록_조회_요청
+        val uri = "/lines"
+        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
 
         // then
         // 지하철_노선_목록_응답됨
         // 지하철_노선_목록_포함됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(response.body().`as`(Array<LineResponse>::class.java).toList().containsAll(listOf(lineResponse1, lineResponse2))).isTrue()
     }
 
     @Test
