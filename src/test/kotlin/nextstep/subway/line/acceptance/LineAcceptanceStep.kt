@@ -4,6 +4,8 @@ import io.restassured.RestAssured
 import io.restassured.response.ExtractableResponse
 import io.restassured.response.Response
 import nextstep.subway.line.dto.LineResponse
+import org.assertj.core.api.Assertions.assertThat
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -71,5 +73,15 @@ object LineAcceptanceStep {
                 .given().log().all().
                 `when`().delete(uri)
                 .then().log().all().extract()
+    }
+
+    fun 노선_생성됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
+        assertThat(response.header("Location")).isNotBlank()
+    }
+
+    fun 노선_생성_실패됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.header("Location")).isBlank()
     }
 }

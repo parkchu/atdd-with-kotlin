@@ -4,7 +4,9 @@ import io.restassured.RestAssured
 import nextstep.subway.AcceptanceTest
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_등록되어_있음
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_목록_조회_요청
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_실패됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_요청
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_수정_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_제거_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.등록한_노선정보_요청
@@ -26,8 +28,7 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // then
         // 지하철_노선_생성됨
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
-        assertThat(response.header("Location")).isNotBlank()
+        노선_생성됨(response)
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -43,8 +44,7 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // then
         // 지하철_노선_생성_실패됨
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
-        assertThat(response.header("Location")).isBlank()
+        노선_생성_실패됨(response)
     }
 
     @Test
