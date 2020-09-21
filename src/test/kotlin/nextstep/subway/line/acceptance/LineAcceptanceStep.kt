@@ -57,4 +57,19 @@ object LineAcceptanceStep {
                 .then()
                 .log().all().extract()
     }
+
+    fun 노선_목록_조회_요청(): ExtractableResponse<Response> {
+        return RestAssured
+                .given().log().all()
+                .`when`()["/lines"]
+                .then().log().all().extract()
+    }
+
+    fun 노선_제거_요청(response: ExtractableResponse<Response>): ExtractableResponse<Response> {
+        val uri = response.header("Location")
+        return RestAssured
+                .given().log().all().
+                `when`().delete(uri)
+                .then().log().all().extract()
+    }
 }

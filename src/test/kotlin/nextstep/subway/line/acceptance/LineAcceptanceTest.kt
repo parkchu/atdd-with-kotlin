@@ -3,8 +3,10 @@ package nextstep.subway.line.acceptance
 import io.restassured.RestAssured
 import nextstep.subway.AcceptanceTest
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_등록되어_있음
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_목록_조회_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_수정_요청
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_제거_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.등록한_노선정보_요청
 import nextstep.subway.line.dto.LineResponse
 import org.assertj.core.api.Assertions.assertThat
@@ -56,7 +58,7 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // when
         // 지하철_노선_목록_조회_요청
-        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()["/lines"].then().log().all().extract()
+        val response = 노선_목록_조회_요청()
 
         // then
         // 지하철_노선_목록_응답됨
@@ -111,13 +113,12 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // when
         // 지하철_노선_제거_요청
-        val uri = lineResponse.header("Location")
-        val response = RestAssured.delete(uri).then().log().all().extract()
+        val response = 노선_제거_요청(lineResponse)
 
         // then
         // 지하철_노선_삭제됨
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
-        val lineListResponse = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()["/lines"].then().log().all().extract()
+        val lineListResponse = 노선_목록_조회_요청()
         assertThat(lineListResponse.`as`(Array<LineResponse>::class.java)).isEmpty()
     }
 }
