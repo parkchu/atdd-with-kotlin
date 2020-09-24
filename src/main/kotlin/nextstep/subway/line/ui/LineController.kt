@@ -5,6 +5,7 @@ import nextstep.subway.line.application.LineService
 import nextstep.subway.line.domain.Line
 import nextstep.subway.line.dto.LineRequest
 import nextstep.subway.line.dto.LineResponse
+import nextstep.subway.line.dto.LineStationRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.ResponseEntity
@@ -43,6 +44,11 @@ class LineController @Autowired constructor(val lineService: LineService) {
     fun deleteLine(@PathVariable id: Long): ResponseEntity<*> {
         lineService.deleteLineById(id)
         return ResponseEntity.noContent().build<Any>()
+    }
+
+    @PostMapping("/{id}/stations")
+    fun addStationOfLine(@PathVariable id: Long, @RequestBody lineStationRequest: LineStationRequest) {
+        lineService.addStation(id, lineStationRequest)
     }
 
     @ExceptionHandler(DataIntegrityViolationException::class)
