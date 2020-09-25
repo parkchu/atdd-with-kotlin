@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Line
 import nextstep.subway.line.dto.LineRequest
 import nextstep.subway.line.dto.LineResponse
 import nextstep.subway.line.dto.LineStationRequest
+import nextstep.subway.line.dto.LineStationResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.ResponseEntity
@@ -47,8 +48,9 @@ class LineController @Autowired constructor(val lineService: LineService) {
     }
 
     @PostMapping("/{id}/stations")
-    fun addStationOfLine(@PathVariable id: Long, @RequestBody lineStationRequest: LineStationRequest) {
+    fun addStationOfLine(@PathVariable id: Long, @RequestBody lineStationRequest: LineStationRequest): ResponseEntity<Void> {
         lineService.addStation(id, lineStationRequest)
+        return ResponseEntity.ok().build()
     }
 
     @ExceptionHandler(DataIntegrityViolationException::class)

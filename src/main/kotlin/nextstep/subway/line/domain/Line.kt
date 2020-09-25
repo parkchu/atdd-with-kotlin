@@ -37,4 +37,8 @@ class Line(
     fun getLineStationResponse(stationRepository: StationRepository): List<LineStationResponse> {
         return lineStations.getLineStationResponses(stationRepository)
     }
+
+    fun addStation(lineStation: LineStation) {
+        lineStations.add(lineStation)
+    }
 }

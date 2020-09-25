@@ -2,7 +2,6 @@ package nextstep.subway.line.domain
 
 import nextstep.subway.line.dto.LineStationResponse
 import nextstep.subway.station.domain.StationRepository
-import nextstep.subway.station.dto.StationResponse
 import java.util.*
 import javax.persistence.*
 
@@ -14,16 +13,18 @@ class LineStations {
 
     fun getLineStationResponses(stationRepository: StationRepository): List<LineStationResponse> {
         return lineStations.map {
-            LineStationResponse(
-                    StationResponse.of(stationRepository.findById(it.stationId).orElseThrow { RuntimeException() }),
-                    it.preStationId,
-                    it.distance,
-                    it.duration
-            )
+            LineStationResponse.of(it, stationRepository)
         }
     }
 
     fun add(lineStation: LineStation) {
+        checkContains(lineStation)
         lineStations.add(lineStation)
+    }
+
+    private fun checkContains(lineStation: LineStation) {
+        if (lineStations.any { it.isSame(lineStation) }) {
+            throw RuntimeException()
+        }
     }
 }
