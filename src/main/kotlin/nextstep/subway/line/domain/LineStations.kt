@@ -12,14 +12,18 @@ class LineStations {
     private val lineStations: MutableList<LineStation> = ArrayList()
 
     fun getLineStationResponses(stationRepository: StationRepository): List<LineStationResponse> {
-        val list = mutableListOf<LineStation>()
+        val lineStationList = LineStationList()
         if (lineStations.isNotEmpty()) {
-            list.add(lineStations.find { it.preStationId == null } ?: throw RuntimeException())
-            while (list.size < lineStations.size) {
-                list.add(lineStations.find { list.last().stationId == it.preStationId } ?: throw RuntimeException())
-            }
+            arrangeLineStations(lineStationList)
         }
-        return list.map { LineStationResponse.of(it, stationRepository) }
+        return lineStationList.map { LineStationResponse.of(it, stationRepository) }
+    }
+
+    private fun arrangeLineStations(list: LineStationList) {
+        list.add(lineStations.find { it.preStationId == null } ?: throw RuntimeException())
+        while (list.size() < lineStations.size) {
+            list.add(lineStations.find { list.last().stationId == it.preStationId } ?: throw RuntimeException())
+        }
     }
 
     fun add(lineStation: LineStation) {
