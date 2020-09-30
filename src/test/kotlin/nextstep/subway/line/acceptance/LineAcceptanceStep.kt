@@ -65,6 +65,10 @@ object LineAcceptanceStep {
                 .then().log().all().extract()
     }
 
+    fun 노선_조회_요청(uri: String): ExtractableResponse<Response> {
+        return RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
+    }
+
     fun 노선_제거_요청(response: ExtractableResponse<Response>): ExtractableResponse<Response> {
         val uri = response.header("Location")
         return RestAssured
@@ -80,5 +84,31 @@ object LineAcceptanceStep {
     fun 노선_생성_실패됨(response: ExtractableResponse<Response>) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         assertThat(response.header("Location")).isBlank()
+    }
+
+    fun 노선_응답됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+    }
+
+    fun 노선_목록_포함됨(response: ExtractableResponse<Response>, list: List<LineResponse>) {
+        assertThat(response.body().`as`(Array<LineResponse>::class.java).toList().containsAll(list)).isTrue()
+    }
+
+    fun 노선_조회_응답됨(response: ExtractableResponse<Response>) {
+        노선_응답됨(response)
+        assertThat(response.`as`(LineResponse::class.java)).isNotNull()
+    }
+
+    fun 노선_수정됨(response: ExtractableResponse<Response>, uri: String) {
+        노선_응답됨(response)
+        val lineResponse = 노선_조회_요청(uri).`as`(LineResponse::class.java)
+        assertThat(lineResponse.name).isEqualTo("라이츄선")
+        assertThat(lineResponse.color).isEqualTo("bg-orange-600")
+    }
+
+    fun 노선_삭제됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value())
+        val lineListResponse = 노선_목록_조회_요청()
+        assertThat(lineListResponse.`as`(Array<LineResponse>::class.java)).isEmpty()
     }
 }
