@@ -24,7 +24,7 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun createLine() {
         // when
         // 지하철_노선_생성_요청
-        val response = 노선_생성_요청("신분당선", "bg-red-600", "5")
+        val response = 노선_생성_요청(name = "신분당선", color = "bg-red-600", intervalTime = "5")
 
         // then
         // 지하철_노선_생성됨
@@ -40,7 +40,7 @@ class LineAcceptanceTest : AcceptanceTest() {
 
         // when
         // 지하철_노선_생성_요청
-        val response = 노선_생성_요청("신분당선", "bg-red-600", "5")
+        val response = 노선_생성_요청(name = "신분당선", color = "bg-red-600", intervalTime = "5")
 
         // then
         // 지하철_노선_생성_실패됨

@@ -22,7 +22,7 @@ class LineAddStationTest : AcceptanceTest() {
     fun testBackground() {
         // Background
         val stationResponse = 지하철역_생성_요청("피카츄역")
-        val lineResponse = 노선_생성_요청("주한선", "bg-red-600", "5")
+        val lineResponse = 노선_생성_요청(name = "주한선", color = "bg-red-600", intervalTime = "5")
 
         //then
         지하철역_생성됨(stationResponse)
