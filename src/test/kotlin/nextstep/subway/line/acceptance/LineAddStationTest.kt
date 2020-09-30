@@ -1,4 +1,4 @@
-package nextstep.subway.line_station
+package nextstep.subway.line.acceptance
 
 import io.restassured.RestAssured
 import nextstep.subway.AcceptanceTest
@@ -195,8 +195,8 @@ class LineAddStationTest : AcceptanceTest() {
         // then
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.OK.value())
         assertThat(response2Body.stations).isNotEmpty
-        assertThat(response2Body.stations.first().station.name).isNotEqualTo("주한역")
-        assertThat(response2Body.stations.last().station.name).isNotEqualTo("주한역")
+        assertThat(response2Body.stations.first().station.name).isEqualTo("피카츄역")
+        assertThat(response2Body.stations.last().station.name).isEqualTo("라이츄역")
         assertThat(response2Body.stations[1].station.name).isEqualTo("주한역")
     }
 }
