@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain
 
+import nextstep.subway.line.dto.LineStationResponse
+import nextstep.subway.station.domain.Station
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -31,5 +33,21 @@ class LineStationsTest {
             // When
             lineStations.add(lineStation)
         }.isInstanceOf(RuntimeException::class.java)
+    }
+
+    @Test
+    fun `LineStation Change LineStationResponse`() {
+        // Given
+        val stations = listOf(Station("테스트역"))
+        val lineStation = LineStation(0, null, 0, 0)
+        val lineStations = LineStations()
+        lineStations.add(lineStation)
+
+        // When
+        val lineStationResponse = lineStations.getLineStationResponses(stations)
+
+        // Then
+        assertThat(lineStationResponse[0]::class.java).isEqualTo(LineStationResponse::class.java)
+        assertThat(lineStationResponse[0].station.name).isEqualTo("테스트역")
     }
 }
