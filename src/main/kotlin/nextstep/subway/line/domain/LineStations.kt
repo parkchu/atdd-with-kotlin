@@ -9,36 +9,38 @@ import javax.persistence.*
 class LineStations {
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "line_id", foreignKey = ForeignKey(name = "fk_line_station_to_line"))
-    private val lineStations: MutableList<LineStation> = ArrayList()
+    private val _lineStations: MutableList<LineStation> = ArrayList()
+    val lineStations: List<LineStation>
+        get() = _lineStations.toList()
 
     fun getLineStationResponses(stations: List<Station>): List<LineStationResponse> {
         val lineStationList = LineStationList()
-        if (lineStations.isNotEmpty()) {
+        if (_lineStations.isNotEmpty()) {
             arrangeLineStations(lineStationList)
         }
-        return lineStationList.map { lineStation -> LineStationResponse.of(lineStation, stations)}
+        return lineStationList.map { lineStation -> LineStationResponse.of(lineStation, stations) }
     }
 
     private fun arrangeLineStations(list: LineStationList) {
-        list.add(lineStations.find { it.preStationId == null } ?: throw RuntimeException())
-        while (list.size() < lineStations.size) {
-            list.add(lineStations.find { list.last().stationId == it.preStationId } ?: throw RuntimeException())
+        list.add(_lineStations.find { it.preStationId == null } ?: throw RuntimeException())
+        while (list.size() < _lineStations.size) {
+            list.add(_lineStations.find { list.last().stationId == it.preStationId } ?: throw RuntimeException())
         }
     }
 
     fun add(lineStation: LineStation) {
         checkContains(lineStation)
-        if (lineStations.isNotEmpty()) {
-            val index = lineStations.indexOf(lineStations.find { it.stationId == lineStation.preStationId }
-                    ?: lineStations.last())
-            lineStation.updatePreStationTo(lineStations[index].stationId)
-            lineStations.stream().filter { it.preStationId == lineStation.preStationId }.findFirst().ifPresent { it.updatePreStationTo(lineStation.stationId) }
+        if (_lineStations.isNotEmpty()) {
+            val index = _lineStations.indexOf(_lineStations.find { it.stationId == lineStation.preStationId }
+                    ?: _lineStations.last())
+            lineStation.updatePreStationTo(_lineStations[index].stationId)
+            _lineStations.stream().filter { it.preStationId == lineStation.preStationId }.findFirst().ifPresent { it.updatePreStationTo(lineStation.stationId) }
         }
-        lineStations.add(lineStation)
+        _lineStations.add(lineStation)
     }
 
     private fun checkContains(lineStation: LineStation) {
-        if (lineStations.any { it.isSame(lineStation) }) {
+        if (_lineStations.any { it.isSame(lineStation) }) {
             throw RuntimeException()
         }
     }
