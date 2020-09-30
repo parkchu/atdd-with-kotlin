@@ -2,7 +2,7 @@ package nextstep.subway.line.domain
 
 import nextstep.subway.core.domain.BaseEntity
 import nextstep.subway.line.dto.LineStationResponse
-import nextstep.subway.station.domain.StationRepository
+import nextstep.subway.station.domain.Station
 import java.time.LocalTime
 import javax.persistence.*
 
@@ -34,8 +34,8 @@ class Line(
         this.intervalTime = updateLine.intervalTime
     }
 
-    fun getLineStationResponse(stationRepository: StationRepository): List<LineStationResponse> {
-        return lineStations.getLineStationResponses(stationRepository)
+    fun getLineStationResponse(stations: List<Station>): List<LineStationResponse> {
+        return lineStations.getLineStationResponses(stations)
     }
 
     fun addStation(lineStation: LineStation) {

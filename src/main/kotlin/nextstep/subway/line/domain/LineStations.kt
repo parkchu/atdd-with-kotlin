@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain
 
 import nextstep.subway.line.dto.LineStationResponse
-import nextstep.subway.station.domain.StationRepository
+import nextstep.subway.station.domain.Station
 import java.util.*
 import javax.persistence.*
 
@@ -11,12 +11,12 @@ class LineStations {
     @JoinColumn(name = "line_id", foreignKey = ForeignKey(name = "fk_line_station_to_line"))
     private val lineStations: MutableList<LineStation> = ArrayList()
 
-    fun getLineStationResponses(stationRepository: StationRepository): List<LineStationResponse> {
+    fun getLineStationResponses(stations: List<Station>): List<LineStationResponse> {
         val lineStationList = LineStationList()
         if (lineStations.isNotEmpty()) {
             arrangeLineStations(lineStationList)
         }
-        return lineStationList.map { LineStationResponse.of(it, stationRepository) }
+        return lineStationList.map { lineStation -> LineStationResponse.of(lineStation, stations)}
     }
 
     private fun arrangeLineStations(list: LineStationList) {

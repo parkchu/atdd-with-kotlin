@@ -25,13 +25,13 @@ class LineService @Autowired constructor(
     fun findAllLines(): List<LineResponse> {
         val lines: List<Line> = lineRepository.findAll()
         return lines
-                .map { line: Line? -> LineResponse.of(line!!, line.getLineStationResponse(stationRepository)) }
+                .map { line: Line? -> LineResponse.of(line!!, line.getLineStationResponse(stationRepository.findAll())) }
     }
 
     @Transactional(readOnly = true)
     fun findLineById(id: Long): LineResponse {
         return lineRepository.findById(id)
-                .map { LineResponse.of(it, it.getLineStationResponse(stationRepository)) }
+                .map { LineResponse.of(it, it.getLineStationResponse(stationRepository.findAll())) }
                 .orElseThrow{ RuntimeException() }
     }
 
