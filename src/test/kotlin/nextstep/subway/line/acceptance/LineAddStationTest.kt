@@ -1,19 +1,22 @@
 package nextstep.subway.line.acceptance
 
-import io.restassured.RestAssured
 import nextstep.subway.AcceptanceTest
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성됨
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_조회_요청
+import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_조회_응답됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.등록한_노선정보_요청
-import nextstep.subway.line.dto.LineResponse
+import nextstep.subway.line.acceptance.LineAddStationStep.노선_마지막에_등록됨
+import nextstep.subway.line.acceptance.LineAddStationStep.노선_중간에_등록됨
+import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록_요청
+import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록되어_있음
+import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록됨
+import nextstep.subway.line.acceptance.LineAddStationStep.노선정보에_역정보_포함됨
 import nextstep.subway.station.acceptance.StationAcceptanceStep.등록한_지하철역정보_요청
 import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_생성_요청
 import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_생성됨
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 
 @DisplayName("지하철 노선에 역 등록 기능")
 class LineAddStationTest : AcceptanceTest() {
@@ -37,24 +40,10 @@ class LineAddStationTest : AcceptanceTest() {
         val lineResponse = 등록한_노선정보_요청("주한선", "bg-red-600", "5")
 
         // when
-        val params: MutableMap<String, Long?> = HashMap()
-        params["lineId"] = lineResponse.id
-        params["preStationId"] = null
-        params["stationId"] = stationResponse.id
-        params["distance"] = 10
-        params["time"] = 10
-        val uri = "/lines/${lineResponse.id}"
-        val response = RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        val response = 노선에_역_등록_요청(stationResponse, lineResponse)
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        노선에_역_등록됨(response)
     }
 
     @DisplayName("지하철 노선 상세정보 조회 시 역 정보가 포함된다.")
@@ -65,28 +54,14 @@ class LineAddStationTest : AcceptanceTest() {
         val lineResponse = 등록한_노선정보_요청("주한선", "bg-red-600", "5")
 
         // Given
-        val params: MutableMap<String, Long?> = HashMap()
-        params["lineId"] = lineResponse.id
-        params["preStationId"] = null
-        params["stationId"] = stationResponse.id
-        params["distance"] = 10
-        params["time"] = 10
-        val uri = "/lines/${lineResponse.id}"
-        RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        노선에_역_등록되어_있음(stationResponse, lineResponse)
 
         // When
-        val response = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
+        val response = 노선_조회_요청("/lines/${lineResponse.id}")
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response.`as`(LineResponse::class.java).stations).isNotEmpty
+        노선_조회_응답됨(response)
+        노선정보에_역정보_포함됨(response)
     }
 
     @DisplayName("지하철 노선에 역을 마지막에 등록한다.")
@@ -98,44 +73,20 @@ class LineAddStationTest : AcceptanceTest() {
         val lineResponse = 등록한_노선정보_요청("주한선", "bg-red-600", "5")
 
         // Given
-        val params: MutableMap<String, Long?> = HashMap()
-        params["lineId"] = lineResponse.id
-        params["preStationId"] = null
-        params["stationId"] = stationResponse.id
-        params["distance"] = 10
-        params["time"] = 10
-        val uri = "/lines/${lineResponse.id}"
-        RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        노선에_역_등록되어_있음(stationResponse, lineResponse)
 
         // when
-        params["stationId"] = stationResponse2.id
-        val response1 = RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        val lineStationResponse = 노선에_역_등록_요청(stationResponse2, lineResponse)
 
         // then
-        assertThat(response1.statusCode()).isEqualTo(HttpStatus.OK.value())
+        노선에_역_등록됨(lineStationResponse)
 
         // When
-        val response2 = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
-        val response2Body = response2.`as`(LineResponse::class.java)
+        val response = 노선_조회_요청("/lines/${lineResponse.id}")
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response2Body.stations).isNotEmpty
-        assertThat(response2Body.stations.last().station.name).isEqualTo("라이츄역")
+        노선_조회_응답됨(response)
+        노선_마지막에_등록됨(response, stationResponse2.name)
     }
 
     @DisplayName("지하철 노선에 역을 중간에 등록한다.")
@@ -148,55 +99,20 @@ class LineAddStationTest : AcceptanceTest() {
         val lineResponse = 등록한_노선정보_요청("주한선", "bg-red-600", "5")
 
         // Given
-        val params: MutableMap<String, Long?> = HashMap()
-        params["lineId"] = lineResponse.id
-        params["preStationId"] = null
-        params["stationId"] = stationResponse.id
-        params["distance"] = 10
-        params["duration"] = 10
-        val uri = "/lines/${lineResponse.id}"
-        RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
-        params["stationId"] = stationResponse2.id
-        RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        노선에_역_등록되어_있음(stationResponse, lineResponse)
+        노선에_역_등록되어_있음(stationResponse2, lineResponse)
 
         // when
-        params["preStationId"] = stationResponse.id
-        params["stationId"] = stationResponse3.id
-        val response1 = RestAssured
-                .given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).`when`()
-                .post("$uri/stations")
-                .then()
-                .log().all().extract()
+        val response1 = 노선에_역_등록_요청(stationResponse3, lineResponse, stationResponse.id)
 
         // then
-        assertThat(response1.statusCode()).isEqualTo(HttpStatus.OK.value())
+        노선에_역_등록됨(response1)
 
         // When
-        val response2 = RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
-        val response2Body = response2.`as`(LineResponse::class.java)
+        val response2 = 노선_조회_요청("/lines/${lineResponse.id}")
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response2Body.stations).isNotEmpty
-        assertThat(response2Body.stations.first().station.name).isEqualTo("피카츄역")
-        assertThat(response2Body.stations.last().station.name).isEqualTo("라이츄역")
-        assertThat(response2Body.stations[1].station.name).isEqualTo("주한역")
+        노선_조회_응답됨(response2)
+        노선_중간에_등록됨(response2, mapOf("first" to stationResponse.name, "second" to stationResponse3.name, "last" to stationResponse2.name))
     }
 }
