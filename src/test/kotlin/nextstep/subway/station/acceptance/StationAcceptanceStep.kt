@@ -37,6 +37,10 @@ object StationAcceptanceStep {
                 .then().log().all().extract()
     }
 
+    fun 등록한_지하철역정보_요청(name: String): StationResponse {
+        return 지하철역_생성_요청(name).`as`(StationResponse::class.java)
+    }
+
     fun 지하철역_생성됨(response: ExtractableResponse<*>) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
         assertThat(response.header("Location")).isNotBlank()

@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line
 import nextstep.subway.line.domain.LineRepository
 import nextstep.subway.line.dto.LineRequest
 import nextstep.subway.line.dto.LineResponse
+import nextstep.subway.line.dto.LineStationRequest
 import nextstep.subway.station.domain.StationRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -23,13 +24,13 @@ class LineService @Autowired constructor(
     fun findAllLines(): List<LineResponse> {
         val lines: List<Line> = lineRepository.findAll()
         return lines
-                .map { line: Line? -> LineResponse.of(line!!) }
+                .map { line: Line? -> LineResponse.of(line!!, line.getLineStationResponse(stationRepository.findAll())) }
     }
 
     @Transactional(readOnly = true)
     fun findLineById(id: Long): LineResponse {
         return lineRepository.findById(id)
-                .map { LineResponse.of(it) }
+                .map { LineResponse.of(it, it.getLineStationResponse(stationRepository.findAll())) }
                 .orElseThrow{ RuntimeException() }
     }
 
@@ -40,5 +41,10 @@ class LineService @Autowired constructor(
 
     fun deleteLineById(id: Long) {
         lineRepository.deleteById(id)
+    }
+
+    fun addStation(lineId: Long, lineStationRequest: LineStationRequest) {
+        val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
+        line.addStation(lineStationRequest.toLineStation())
     }
 }

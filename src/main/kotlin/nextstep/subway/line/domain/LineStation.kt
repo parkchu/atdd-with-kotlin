@@ -17,4 +17,12 @@ class LineStation(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
-)
+) {
+        fun isSame(lineStation: LineStation): Boolean {
+                return this.stationId == lineStation.stationId
+        }
+
+        fun updatePreStationTo(id: Long) {
+                preStationId = id
+        }
+}
