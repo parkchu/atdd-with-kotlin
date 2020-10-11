@@ -6,6 +6,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_조회_응답�
 import nextstep.subway.line.acceptance.LineAcceptanceStep.등록한_노선정보_요청
 import nextstep.subway.line.acceptance.LineAddStationStep.노선_마지막에_등록됨
 import nextstep.subway.line.acceptance.LineAddStationStep.노선_중간에_등록됨
+import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록_실패됨
 import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록_요청
 import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록되어_있음
 import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록됨
@@ -94,5 +95,18 @@ class LineAddStationTest : AcceptanceTest() {
         // then
         노선_조회_응답됨(response2)
         노선_중간에_등록됨(response2, mapOf("first" to station1.name, "second" to station3.name, "last" to station2.name))
+    }
+
+    @DisplayName("이미 등록되어 있던 역을 등록한다.")
+    @Test
+    fun addStationOfLine4() {
+        // Given
+        노선에_역_등록되어_있음(station1.id, lineId)
+
+        // When
+        val response = 노선에_역_등록_요청(station1.id, lineId)
+
+        // Then
+        노선에_역_등록_실패됨(response)
     }
 }

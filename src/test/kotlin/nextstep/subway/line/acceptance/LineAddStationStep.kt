@@ -51,4 +51,9 @@ object LineAddStationStep {
         assertThat(responseBody.stations.last().station.name).isEqualTo(stations["last"])
         assertThat(responseBody.stations[1].station.name).isEqualTo(stations["second"])
     }
+
+    fun 노선에_역_등록_실패됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.header("Location")).isBlank()
+    }
 }
