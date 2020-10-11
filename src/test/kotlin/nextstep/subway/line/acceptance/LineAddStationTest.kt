@@ -109,4 +109,14 @@ class LineAddStationTest : AcceptanceTest() {
         // Then
         노선에_역_등록_실패됨(response)
     }
+
+    @DisplayName("존재하지 않는 역을 등록한다.")
+    @Test
+    fun addStationOfLine5() {
+        // When
+        val response = 노선에_역_등록_요청(1000, lineId)
+
+        // Then
+        노선에_역_등록_실패됨(response)
+    }
 }
