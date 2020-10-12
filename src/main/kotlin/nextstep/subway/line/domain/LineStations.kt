@@ -2,6 +2,7 @@ package nextstep.subway.line.domain
 
 import nextstep.subway.line.dto.LineStationResponse
 import nextstep.subway.station.domain.Station
+import org.springframework.dao.DataIntegrityViolationException
 import java.util.*
 import javax.persistence.*
 
@@ -41,7 +42,7 @@ class LineStations {
 
     private fun checkContains(lineStation: LineStation) {
         if (_lineStations.any { it.isSame(lineStation) }) {
-            throw RuntimeException()
+            throw DataIntegrityViolationException("")
         }
     }
 }

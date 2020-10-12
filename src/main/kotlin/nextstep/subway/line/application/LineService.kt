@@ -7,8 +7,10 @@ import nextstep.subway.line.dto.LineResponse
 import nextstep.subway.line.dto.LineStationRequest
 import nextstep.subway.station.domain.StationRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.lang.IllegalArgumentException
 
 @Service
 @Transactional
@@ -44,6 +46,7 @@ class LineService @Autowired constructor(
     }
 
     fun addStation(lineId: Long, lineStationRequest: LineStationRequest) {
+        stationRepository.findById(lineStationRequest.stationId).orElseThrow { DataIntegrityViolationException("") }
         val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
         line.addStation(lineStationRequest.toLineStation())
     }

@@ -4,21 +4,20 @@ import io.restassured.RestAssured
 import io.restassured.response.ExtractableResponse
 import io.restassured.response.Response
 import nextstep.subway.line.dto.LineResponse
-import nextstep.subway.station.dto.StationResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
 object LineAddStationStep {
-    fun 노선에_역_등록되어_있음(stationResponse: StationResponse, lineResponse: LineResponse): ExtractableResponse<Response> {
-        return 노선에_역_등록_요청(stationResponse, lineResponse)
+    fun 노선에_역_등록되어_있음(stationId: Long, lineId: Long): ExtractableResponse<Response> {
+        return 노선에_역_등록_요청(stationId, lineId)
     }
 
-    fun 노선에_역_등록_요청(stationResponse: StationResponse, lineResponse: LineResponse, preStationId: Long? = null): ExtractableResponse<Response> {
+    fun 노선에_역_등록_요청(stationId: Long, lineId: Long, preStationId: Long? = null): ExtractableResponse<Response> {
         val params: MutableMap<String, Long?> = HashMap()
-        params["lineId"] = lineResponse.id
+        params["lineId"] = lineId
         params["preStationId"] = preStationId
-        params["stationId"] = stationResponse.id
+        params["stationId"] = stationId
         params["distance"] = 10
         params["time"] = 10
         return RestAssured
@@ -26,7 +25,7 @@ object LineAddStationStep {
                 .log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params).`when`()
-                .post("/lines/${lineResponse.id}/stations")
+                .post("/lines/${lineId}/stations")
                 .then()
                 .log().all().extract()
     }
@@ -51,5 +50,10 @@ object LineAddStationStep {
         assertThat(responseBody.stations.first().station.name).isEqualTo(stations["first"])
         assertThat(responseBody.stations.last().station.name).isEqualTo(stations["last"])
         assertThat(responseBody.stations[1].station.name).isEqualTo(stations["second"])
+    }
+
+    fun 노선에_역_등록_실패됨(response: ExtractableResponse<Response>) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        assertThat(response.header("Location")).isBlank()
     }
 }
