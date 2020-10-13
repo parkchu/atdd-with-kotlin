@@ -50,4 +50,9 @@ class LineService @Autowired constructor(
         val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
         line.addStation(lineStationRequest.toLineStation())
     }
+
+    fun deleteStation(lineId: Long, stationId: Long) {
+        val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
+        line.deleteStation(stationId)
+    }
 }

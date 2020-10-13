@@ -45,4 +45,8 @@ class LineStations {
             throw DataIntegrityViolationException("")
         }
     }
+
+    fun delete(stationId: Long) {
+        _lineStations.removeIf { it.stationId == stationId }
+    }
 }

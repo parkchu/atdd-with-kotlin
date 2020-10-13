@@ -55,6 +55,7 @@ class LineController @Autowired constructor(val lineService: LineService) {
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     fun deleteStationOfLine(@PathVariable lineId: Long, @PathVariable stationId: Long): ResponseEntity<Void> {
+        lineService.deleteStation(lineId, stationId)
         return ResponseEntity.ok().build()
     }
 
