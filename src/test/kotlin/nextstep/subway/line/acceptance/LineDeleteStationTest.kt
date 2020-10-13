@@ -75,4 +75,17 @@ class LineDeleteStationTest: AcceptanceTest() {
         assertThat(lineResponse.stations.last().station.id).isEqualTo(station2Id)
         assertThat(lineResponse.stations.last().preStationId).isEqualTo(station1Id)
     }
+
+    @DisplayName("지하철 노선에 등록되지 않은 역을 제외한다.")
+    @Test
+    fun deleteStationOfLine3() {
+        // When
+        val response = RestAssured
+                .given().log().all().
+                `when`().delete("$uri/${1000}")
+                .then().log().all().extract()
+
+        // Given
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+    }
 }
