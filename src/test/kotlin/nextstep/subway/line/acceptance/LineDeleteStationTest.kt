@@ -53,4 +53,26 @@ class LineDeleteStationTest: AcceptanceTest() {
         assertThat(lineResponse.stations.first().station.id).isEqualTo(station1Id)
         assertThat(lineResponse.stations.last().station.id).isEqualTo(station3Id)
     }
+
+    @DisplayName("지하철 노선에 등록된 중간 역을 제외한다.")
+    @Test
+    fun deleteStationOfLine2() {
+        // When
+        val response = RestAssured
+                .given().log().all().
+                `when`().delete("$uri/$station3Id")
+                .then().log().all().extract()
+
+        // Given
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+
+        // When
+        val lineResponse = 노선_조회_요청(lineId).`as`(LineResponse::class.java)
+
+        // Given
+        assertThat(lineResponse.stations.find { it.station.id == station3Id }).isNull()
+        assertThat(lineResponse.stations.first().station.id).isEqualTo(station1Id)
+        assertThat(lineResponse.stations.last().station.id).isEqualTo(station2Id)
+        assertThat(lineResponse.stations.last().preStationId).isEqualTo(station1Id)
+    }
 }

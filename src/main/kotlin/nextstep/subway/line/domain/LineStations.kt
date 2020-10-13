@@ -47,6 +47,8 @@ class LineStations {
     }
 
     fun delete(stationId: Long) {
+        val deleteLineStation = _lineStations.find { it.stationId == stationId } ?: throw RuntimeException()
+        _lineStations.find {it.preStationId == stationId}?.updatePreStationTo(deleteLineStation.preStationId)
         _lineStations.removeIf { it.stationId == stationId }
     }
 }
