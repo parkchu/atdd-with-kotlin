@@ -49,7 +49,7 @@ class LineAddStationTest : AcceptanceTest() {
         노선에_역_등록되어_있음(station1.id, lineId)
 
         // When
-        val response = 노선_조회_요청("/lines/$lineId")
+        val response = 노선_조회_요청(lineId)
 
         // then
         노선_조회_응답됨(response)
@@ -69,7 +69,7 @@ class LineAddStationTest : AcceptanceTest() {
         노선에_역_등록됨(lineStationResponse)
 
         // When
-        val response = 노선_조회_요청("/lines/$lineId")
+        val response = 노선_조회_요청(lineId)
 
         // then
         노선_조회_응답됨(response)
@@ -90,7 +90,7 @@ class LineAddStationTest : AcceptanceTest() {
         노선에_역_등록됨(response1)
 
         // When
-        val response2 = 노선_조회_요청("/lines/$lineId")
+        val response2 = 노선_조회_요청(lineId)
 
         // then
         노선_조회_응답됨(response2)

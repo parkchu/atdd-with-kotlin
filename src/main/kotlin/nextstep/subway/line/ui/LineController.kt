@@ -53,6 +53,11 @@ class LineController @Autowired constructor(val lineService: LineService) {
         return ResponseEntity.ok().build()
     }
 
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    fun deleteStationOfLine(@PathVariable lineId: Long, @PathVariable stationId: Long): ResponseEntity<Void> {
+        return ResponseEntity.ok().build()
+    }
+
     @ExceptionHandler(DataIntegrityViolationException::class)
     fun handleIllegalArgsException(e: DataIntegrityViolationException?): ResponseEntity<*> {
         return ResponseEntity.badRequest().build<Any>()
