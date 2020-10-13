@@ -1,6 +1,7 @@
 package nextstep.subway.station.ui
 
 import mu.KotlinLogging
+import nextstep.subway.line.application.LineService
 import nextstep.subway.station.domain.StationRepository
 import nextstep.subway.station.dto.StationCreateRequest
 import nextstep.subway.station.dto.StationResponse
@@ -14,6 +15,7 @@ val logger = KotlinLogging.logger { }
 
 @RestController
 class StationController @Autowired constructor(
+        val lineService: LineService,
         private val stationRepository: StationRepository
 ) {
     @PostMapping("/stations")
@@ -35,6 +37,7 @@ class StationController @Autowired constructor(
     @DeleteMapping("/stations/{id}")
     fun deleteStation(@PathVariable id: Long): ResponseEntity<Void> {
         stationRepository.deleteById(id)
+        lineService.deleteStationAllLine(id)
         return ResponseEntity.noContent().build()
     }
 }

@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Line
 import nextstep.subway.line.dto.LineRequest
 import nextstep.subway.line.dto.LineResponse
 import nextstep.subway.line.dto.LineStationRequest
-import nextstep.subway.line.dto.LineStationResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.ResponseEntity

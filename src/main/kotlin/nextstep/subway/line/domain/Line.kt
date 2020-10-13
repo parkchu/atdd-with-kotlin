@@ -45,4 +45,8 @@ class Line(
     fun deleteStation(stationId: Long) {
         lineStations.delete(stationId)
     }
+
+    fun containsStation(stationId: Long): Boolean {
+        return lineStations.hasIt(stationId)
+    }
 }

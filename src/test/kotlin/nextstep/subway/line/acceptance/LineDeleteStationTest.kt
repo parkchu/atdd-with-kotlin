@@ -11,6 +11,8 @@ import nextstep.subway.line.acceptance.LineDeleteStationStep.노선에_역_제�
 import nextstep.subway.line.acceptance.LineDeleteStationStep.노선에_역_제외_확인됨
 import nextstep.subway.line.dto.LineResponse
 import nextstep.subway.station.acceptance.StationAcceptanceStep.등록한_지하철역정보_요청
+import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_생성_요청
+import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_제거_요청
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -75,5 +77,21 @@ class LineDeleteStationTest: AcceptanceTest() {
 
         // Given
         노선에_역_제외_실패됨(response)
+    }
+
+    @DisplayName("역을 제거할경우 노선에 등록된 역도 제거된다.")
+    @Test
+    fun deleteStationOfLine4() {
+        // Given
+        val response = 지하철역_생성_요청("테스트역")
+        val station4Id: Long = 4
+        노선에_역_등록되어_있음(station4Id, lineId)
+
+        // When
+        지하철역_제거_요청(response)
+        val lineResponse = 노선_조회_요청(lineId).`as`(LineResponse::class.java)
+
+        // Then
+        노선에_역_제외_확인됨(lineResponse, station4Id)
     }
 }
