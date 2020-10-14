@@ -65,8 +65,8 @@ object LineAcceptanceStep {
                 .then().log().all().extract()
     }
 
-    fun 노선_조회_요청(uri: String): ExtractableResponse<Response> {
-        return RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()[uri].then().log().all().extract()
+    fun 노선_조회_요청(lineId: Long): ExtractableResponse<Response> {
+        return RestAssured.given().log().all().accept(MediaType.APPLICATION_JSON_VALUE).`when`()["/lines/$lineId"].then().log().all().extract()
     }
 
     fun 노선_제거_요청(response: ExtractableResponse<Response>): ExtractableResponse<Response> {
@@ -99,9 +99,9 @@ object LineAcceptanceStep {
         assertThat(response.`as`(LineResponse::class.java)).isNotNull()
     }
 
-    fun 노선_수정됨(response: ExtractableResponse<Response>, uri: String) {
+    fun 노선_수정됨(response: ExtractableResponse<Response>, lineId: Long) {
         노선_응답됨(response)
-        val lineResponse = 노선_조회_요청(uri).`as`(LineResponse::class.java)
+        val lineResponse = 노선_조회_요청(lineId).`as`(LineResponse::class.java)
         assertThat(lineResponse.name).isEqualTo("라이츄선")
         assertThat(lineResponse.color).isEqualTo("bg-orange-600")
     }

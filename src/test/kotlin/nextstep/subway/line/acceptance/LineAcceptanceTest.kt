@@ -74,12 +74,11 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun getLine() {
         // given
         // 지하철_노선_등록되어_있음
-        val createResponse = 노선_등록되어_있음("신분당선", "bg-red-600", "5")
+        val createResponse = 등록한_노선정보_요청("신분당선", "bg-red-600", "5")
 
         // when
         // 지하철_노선_조회_요청
-        val uri = createResponse.header("Location")
-        val response = 노선_조회_요청(uri)
+        val response = 노선_조회_요청(createResponse.id)
 
         // then
         // 지하철_노선_응답됨
@@ -91,15 +90,15 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun updateLine() {
         // given
         // 지하철_노선_등록되어_있음
-        val lineResponse = 노선_등록되어_있음("피카츄선", "bg-yellow-600", "5")
+        val lineResponse = 등록한_노선정보_요청("피카츄선", "bg-yellow-600", "5")
 
         // when
         // 지하철_노선_수정_요청
-        val updateResponse = 노선_수정_요청(lineResponse.`as`(LineResponse::class.java), name = "라이츄선", color = "bg-orange-600")
+        val updateResponse = 노선_수정_요청(lineResponse, name = "라이츄선", color = "bg-orange-600")
 
         // then
         // 지하철_노선_수정됨
-        노선_수정됨(updateResponse, lineResponse.header("Location"))
+        노선_수정됨(updateResponse, lineResponse.id)
     }
 
     @DisplayName("지하철 노선을 제거한다.")

@@ -45,4 +45,14 @@ class LineStations {
             throw DataIntegrityViolationException("")
         }
     }
+
+    fun delete(stationId: Long) {
+        val deleteLineStation = _lineStations.find { it.stationId == stationId } ?: throw DataIntegrityViolationException("")
+        _lineStations.find {it.preStationId == stationId}?.updatePreStationTo(deleteLineStation.preStationId)
+        _lineStations.removeIf { it.stationId == stationId }
+    }
+
+    fun hasIt(stationId: Long): Boolean {
+        return lineStations.any { it.stationId == stationId }
+    }
 }

@@ -22,7 +22,7 @@ class LineStation(
                 return this.stationId == lineStation.stationId
         }
 
-        fun updatePreStationTo(id: Long) {
+        fun updatePreStationTo(id: Long?) {
                 preStationId = id
         }
 }
