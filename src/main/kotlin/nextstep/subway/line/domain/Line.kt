@@ -7,6 +7,7 @@ import java.time.LocalTime
 import javax.persistence.*
 
 @Entity
+@Table(name = "line")
 class Line(
         @Column(unique = true, nullable = false)
         var name: String,

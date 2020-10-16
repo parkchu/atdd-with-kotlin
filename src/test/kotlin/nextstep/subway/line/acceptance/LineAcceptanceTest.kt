@@ -15,7 +15,6 @@ import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_목록_포함�
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_삭제됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_수정됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_조회_응답됨
-import nextstep.subway.line.dto.LineResponse
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 

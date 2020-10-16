@@ -4,6 +4,7 @@ import nextstep.subway.core.domain.BaseEntity
 import javax.persistence.*
 
 @Entity
+@Table(name = "station")
 class Station(
     @Column(unique = true, nullable = false)
     val name: String,
