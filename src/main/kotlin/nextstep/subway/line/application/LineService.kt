@@ -31,13 +31,16 @@ class LineService @Autowired constructor(
 
     @Transactional(readOnly = true)
     fun findLineById(id: Long): LineResponse {
-        return lineRepository.findById(id)
-                .map { LineResponse.of(it, it.getLineStationResponse(stationRepository.findAll())) }
-                .orElseThrow{ RuntimeException() }
+        val line = findById(id)
+        return LineResponse.of(line, line.getLineStationResponse(stationRepository.findAll()))
+    }
+
+    private fun findById(id: Long): Line {
+        return lineRepository.findById(id).orElseThrow { RuntimeException() }
     }
 
     fun updateLine(id: Long, lineUpdateRequest: LineRequest) {
-        val persistLine = lineRepository.findById(id).orElseThrow { RuntimeException() }
+        val persistLine = findById(id)
         persistLine.update(lineUpdateRequest.toLine())
     }
 
@@ -47,12 +50,12 @@ class LineService @Autowired constructor(
 
     fun addStation(lineId: Long, lineStationRequest: LineStationRequest) {
         stationRepository.findById(lineStationRequest.stationId).orElseThrow { DataIntegrityViolationException("") }
-        val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
+        val line = findById(lineId)
         line.addStation(lineStationRequest.toLineStation())
     }
 
     fun deleteStation(lineId: Long, stationId: Long) {
-        val line = lineRepository.findById(lineId).orElseThrow { RuntimeException() }
+        val line = findById(lineId)
         line.deleteStation(stationId)
     }
 
