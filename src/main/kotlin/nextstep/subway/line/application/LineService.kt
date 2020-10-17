@@ -60,7 +60,7 @@ class LineService @Autowired constructor(
     }
 
     fun deleteStationAllLine(stationId: Long) {
-        val lines = lineRepository.findAll().filter { it.containsStation(stationId) }
+        val lines = lineRepository.findByStationContains(stationId) ?: listOf()
         lines.forEach { deleteStation(it.id, stationId) }
     }
 }

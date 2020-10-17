@@ -51,8 +51,4 @@ class LineStations {
         _lineStations.find {it.preStationId == stationId}?.updatePreStationTo(deleteLineStation.preStationId)
         _lineStations.removeIf { it.stationId == stationId }
     }
-
-    fun hasIt(stationId: Long): Boolean {
-        return lineStations.any { it.stationId == stationId }
-    }
 }
