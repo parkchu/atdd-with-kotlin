@@ -22,8 +22,8 @@ class LineStationServiceTest {
     @Mock
     private lateinit var stationRepository: StationRepository
 
-    private val line = Line("테스트선", "yellow",  LocalTime.of(5, 30), LocalTime.of(23, 30), 5)
-    private val station = Station("테스트역")
+    private val line = Line("테스트선", "yellow",  LocalTime.of(5, 30), LocalTime.of(23, 30), 5, id = 1)
+    private val station = Station("테스트역", id = 1)
     private val lineStationRequest = LineStationRequest(station.id, null, 1, 1)
 
     @BeforeEach
