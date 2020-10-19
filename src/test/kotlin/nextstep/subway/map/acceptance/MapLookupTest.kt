@@ -56,4 +56,49 @@ class MapLookupTest : AcceptanceTest() {
         assertThat(mapResponse.lineResponses[1].stations[1].station.id).isEqualTo(station4.id)
         assertThat(mapResponse.lineResponses[1].stations.last().station.id).isEqualTo(station5.id)
     }
+
+    @DisplayName("변하지 않은 지하철 노선도를 조회한다.")
+    @Test
+    fun lookupRouteMap2() {
+        // Given
+        val station1 = 등록한_지하철역정보_요청("일역")
+        val station2 = 등록한_지하철역정보_요청("이역")
+        val station3 = 등록한_지하철역정보_요청("삼역")
+        val station4 = 등록한_지하철역정보_요청("사역")
+        val station5 = 등록한_지하철역정보_요청("오역")
+        val line1 = 등록한_노선정보_요청("1호선", "bg-red-600", "5")
+        val line2 = 등록한_노선정보_요청("2호선", "bg-red-600", "5")
+        노선에_역_등록되어_있음(station1.id, line1.id)
+        노선에_역_등록되어_있음(station2.id, line1.id)
+        노선에_역_등록되어_있음(station3.id, line1.id)
+        노선에_역_등록되어_있음(station1.id, line2.id)
+        노선에_역_등록되어_있음(station4.id, line2.id)
+        노선에_역_등록되어_있음(station5.id, line2.id)
+        val response = RestAssured
+                .given()
+                .log().all()
+                .header("If-None-Match", "")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .`when`()
+                .get("/maps")
+                .then()
+                .header("ETag", notNullValue())
+                .log().all().extract()
+
+        // When
+        val eTag = response.header("ETag")
+        val response2 = RestAssured
+                .given()
+                .log().all()
+                .header("If-None-Match", eTag)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .`when`()
+                .get("/maps")
+                .then()
+                .header("ETag", notNullValue())
+                .log().all().extract()
+
+        // Then
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.NOT_MODIFIED.value())
+    }
 }
