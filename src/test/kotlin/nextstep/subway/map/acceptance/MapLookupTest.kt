@@ -7,6 +7,7 @@ import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록�
 import nextstep.subway.map.dto.MapResponse
 import nextstep.subway.station.acceptance.StationAcceptanceStep.등록한_지하철역정보_요청
 import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.CoreMatchers.notNullValue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.http.HttpStatus
@@ -37,10 +38,12 @@ class MapLookupTest : AcceptanceTest() {
         val response = RestAssured
                 .given()
                 .log().all()
+                .header("If-None-Match", "")
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .`when`()
                 .get("/maps")
                 .then()
+                .header("ETag", notNullValue())
                 .log().all().extract()
 
         // Then

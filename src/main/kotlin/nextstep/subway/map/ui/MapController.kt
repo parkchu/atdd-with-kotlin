@@ -13,6 +13,6 @@ import org.springframework.web.bind.annotation.RestController
 class MapController @Autowired constructor(val mapService: MapService) {
     @GetMapping
     fun findMap(): ResponseEntity<MapResponse> {
-        return ResponseEntity.ok(mapService.findMap())
+        return ResponseEntity.ok().body(mapService.findMap())
     }
 }

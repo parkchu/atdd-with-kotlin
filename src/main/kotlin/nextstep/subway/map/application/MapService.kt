@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class MapService @Autowired constructor(
-        val lineService: LineService
+        private val lineService: LineService
 ) {
     fun findMap(): MapResponse {
         return MapResponse.of(lineService.findAllLines())
