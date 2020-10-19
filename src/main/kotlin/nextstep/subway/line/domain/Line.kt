@@ -7,6 +7,7 @@ import java.time.LocalTime
 import javax.persistence.*
 
 @Entity
+@Table(name = "line")
 class Line(
         @Column(unique = true, nullable = false)
         var name: String,
@@ -44,9 +45,5 @@ class Line(
 
     fun deleteStation(stationId: Long) {
         lineStations.delete(stationId)
-    }
-
-    fun containsStation(stationId: Long): Boolean {
-        return lineStations.hasIt(stationId)
     }
 }

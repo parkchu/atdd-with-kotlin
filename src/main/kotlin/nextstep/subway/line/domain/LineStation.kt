@@ -3,7 +3,7 @@ package nextstep.subway.line.domain
 import javax.persistence.*
 
 @Entity
-@Table
+@Table(name = "line_station")
 class LineStation(
         @Column(nullable = false)
         val stationId: Long,
