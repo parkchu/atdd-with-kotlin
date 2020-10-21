@@ -15,7 +15,9 @@ install:
   - npm install
 
 script:
-  - npm run prod
+  - "cd frontend/"
+  - "npm run prod"
+  - "cd ../"
   - "./gradlew clean build"
 
 before_deploy:
