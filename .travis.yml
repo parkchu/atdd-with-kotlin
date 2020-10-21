@@ -11,13 +11,7 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
 
-install:
-  - npm install
-
 script:
-  - "cd frontend/"
-  - "npm run prod"
-  - "cd ../"
   - "./gradlew clean build"
 
 before_deploy:
