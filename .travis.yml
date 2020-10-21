@@ -13,9 +13,9 @@ cache:
 
 install:
   - npm install
-  - npm install webpack
 
 script:
+  - "npm install webpack"
   - "cd frontend/"
   - "npm run prod"
   - "cd ../"
