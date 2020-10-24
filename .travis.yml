@@ -15,8 +15,7 @@ install:
   - npm install
 
 script:
-  - "npm install -g webpack"
-  - "npm install --save-dev webpack-cli"
+  - "npm install -g webpack webpack-cli"
   - "cd frontend/"
   - "npm run prod"
   - "cd ../"
