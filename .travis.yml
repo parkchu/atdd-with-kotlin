@@ -15,7 +15,7 @@ install:
   - npm install
 
 script:
-  - "npm install webpack"
+  - "npm install -g webpack"
   - "cd frontend/"
   - "npm run prod"
   - "cd ../"
