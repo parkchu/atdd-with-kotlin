@@ -10,9 +10,9 @@ class LineStation(
 
         var preStationId: Long? = null,
 
-        var distance: Int? = null,
+        var distance: Int,
 
-        var duration: Int? = null,
+        var duration: Int,
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
