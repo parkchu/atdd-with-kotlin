@@ -39,7 +39,7 @@ class FindShortestPathTest : AcceptanceTest() {
                 .then().log().all().extract()
 
         // Then
-        assertThat(response).isEqualTo(HttpStatus.OK.value())
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         assertThat(response.`as`(PathResponse::class.java).distance).isEqualTo(40)
         assertThat(response.`as`(PathResponse::class.java).duration).isEqualTo(40)
     }

@@ -62,4 +62,8 @@ class LineService @Autowired constructor(
         val lines = lineRepository.findByStationContains(stationId) ?: listOf()
         lines.forEach { deleteStation(it.id, stationId) }
     }
+
+    fun findStationContains(stationId: Long): List<Line> {
+        return lineRepository.findByStationContains(stationId) ?: listOf()
+    }
 }
