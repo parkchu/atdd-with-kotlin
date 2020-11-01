@@ -21,15 +21,16 @@ class PathServiceTest {
     @Mock
     private lateinit var stationRepository: StationRepository
 
-    @DisplayName("출발역과 도착역이 붙어있을경우 경로 구하기")
+    @DisplayName("하나의 경로 구하기")
     @Test
     fun findPath() {
         val lineStation1 = LineStation(1, null, 5, 10)
         val lineStation2 = LineStation(2, 1, 10, 10)
-        val lineStations = listOf(lineStation1, lineStation2)
+        val lineStation3 = LineStation(3, 2, 10, 10)
+        val lineStations = listOf(lineStation1, lineStation2, lineStation3)
         `when`(lineStationRepository.findAll()).thenReturn(lineStations)
         val station1 = Station("출발역", id = 1)
-        val station2 = Station("도착역", id = 2)
+        val station2 = Station("도착역", id = 3)
         val stations = listOf(station1, station2)
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
@@ -38,7 +39,7 @@ class PathServiceTest {
 
         assertThat(path.stations.first().id).isEqualTo(stations.first().id)
         assertThat(path.stations.last().id).isEqualTo(stations.last().id)
-        assertThat(path.distance).isEqualTo(15)
-        assertThat(path.duration).isEqualTo(20)
+        assertThat(path.distance).isEqualTo(25)
+        assertThat(path.duration).isEqualTo(30)
     }
 }

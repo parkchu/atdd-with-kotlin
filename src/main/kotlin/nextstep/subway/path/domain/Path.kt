@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.LineStation
 import nextstep.subway.path.dto.PathStationResponse
 import nextstep.subway.station.domain.Station
 
-class Path(val stations: List<LineStation>) {
+class Path(val stations: List<LineStation> = listOf()) {
     val distance: Int
         get() = stations.sumBy { it.distance }
     val duration: Int

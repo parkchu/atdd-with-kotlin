@@ -8,4 +8,8 @@ class Paths() {
     fun add(path: Path) {
         _paths.add(path)
     }
+
+    fun getShortestPath(): Path {
+        return paths.minBy { it.distance } ?: Path()
+    }
 }
