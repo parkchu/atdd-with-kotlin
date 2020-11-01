@@ -3,6 +3,7 @@ package nextstep.subway.path.application
 import nextstep.subway.line.domain.LineStation
 import nextstep.subway.line.domain.LineStationRepository
 import nextstep.subway.path.domain.Path
+import nextstep.subway.path.domain.PathStations
 import nextstep.subway.path.dto.PathResponse
 import nextstep.subway.station.domain.StationRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,10 +18,10 @@ class PathService @Autowired constructor(
         get() = lineStationRepository.findAll()
 
     fun findShortest(startStationId: Long, arrivalStationId: Long): PathResponse {
-        val path = Path(startStationId, arrivalStationId)
+        val path = PathStations()
         path.add(findByStationId(startStationId))
         path.add(findByStationId(arrivalStationId))
-        return PathResponse.of(path, stationRepository.findAll())
+        return PathResponse.of(Path(listOf()), stationRepository.findAll())
     }
 
     private fun findByStationId(stationId: Long): LineStation {
