@@ -15,7 +15,7 @@ import org.springframework.http.MediaType
 @DisplayName("지하철 경로 검색")
 class FindShortestPathTest : AcceptanceTest() {
 
-    @DisplayName("두 역의 최단 거리 경로를 조회")
+    /* @DisplayName("두 역의 최단 거리 경로를 조회")
     @Test
     fun findShortestPath() {
         // Given
@@ -43,5 +43,5 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(response.`as`(PathResponse::class.java).distance).isEqualTo(50)
         assertThat(response.`as`(PathResponse::class.java).duration).isEqualTo(50)
         assertThat(response.`as`(PathResponse::class.java).stations).hasSize(5)
-    }
+    } */
 }

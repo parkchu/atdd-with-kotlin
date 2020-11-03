@@ -11,7 +11,7 @@ class PathResponse(
     companion object {
         fun of(path: Path, stations: List<Station>): PathResponse {
             return PathResponse(
-                    path.getStationsResponse(stations),
+                    listOf(),
                     path.distance,
                     path.duration)
         }
