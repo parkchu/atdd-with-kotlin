@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto
 
 import nextstep.subway.path.domain.Path
-import nextstep.subway.station.domain.Station
 
 class PathResponse(
         val stations: List<PathStationResponse>,
@@ -9,9 +8,9 @@ class PathResponse(
         val duration: Int
 ) {
     companion object {
-        fun of(path: Path, stations: List<Station>): PathResponse {
+        fun of(path: Path): PathResponse {
             return PathResponse(
-                    listOf(),
+                    path.getStationsResponse(),
                     path.distance,
                     path.duration)
         }
