@@ -1,18 +1,23 @@
 package nextstep.subway.path.domain
 
+import nextstep.subway.station.domain.Station
+
 class PathStations {
-    private val _stations = mutableListOf<PathStation>()
-    val stations: List<PathStation>
-        get() = _stations.toList()
+    private val _pathStations = mutableListOf<PathStation>()
+    val pathStations: List<PathStation>
+        get() = _pathStations.toList()
 
     fun add(pathStation: PathStation) {
-        _stations.add(relocation(pathStation))
+        _pathStations.add(relocation(pathStation))
     }
 
     private fun relocation(pathStation: PathStation): PathStation {
-        val index = _stations.indexOf(_stations.find { it.beforeStationId == pathStation.beforeStationId } ?: return pathStation)
-        _stations.retainAll(_stations.take(index))
+        val index = _pathStations.indexOf(_pathStations.find { it.beforeStationId == pathStation.beforeStationId } ?: return pathStation)
+        _pathStations.retainAll(_pathStations.take(index))
         return pathStation
     }
 
+    fun getStations(): List<Station> {
+        return _pathStations.map { it.station }
+    }
 }

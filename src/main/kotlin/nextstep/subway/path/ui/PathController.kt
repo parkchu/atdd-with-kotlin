@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/paths")
 class PathController @Autowired constructor(val pathService: PathService) {
-    /* @GetMapping
+    @GetMapping
     fun findShortestPath(@RequestParam("source") startStationId: Long, @RequestParam("target") arrivalStationId: Long): ResponseEntity<PathResponse> {
         return ResponseEntity.ok().body(pathService.findShortest(startStationId, arrivalStationId))
-    } */
+    }
 }

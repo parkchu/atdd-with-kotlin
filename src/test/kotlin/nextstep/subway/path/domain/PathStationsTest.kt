@@ -16,8 +16,8 @@ class PathStationsTest {
 
         pathStations.add(pathStation)
 
-        assertThat(pathStations.stations).isNotEmpty
-        assertThat(pathStations.stations[0]::class.java).isEqualTo(PathStation::class.java)
+        assertThat(pathStations.pathStations).isNotEmpty
+        assertThat(pathStations.pathStations[0]::class.java).isEqualTo(PathStation::class.java)
     }
     
     @Test
@@ -29,13 +29,13 @@ class PathStationsTest {
         pathStations.add(PathStation(station, lineStation, null))
         pathStations.add(PathStation(station, lineStation, 1))
         pathStations.add(PathStation(station, lineStation, 2))
-        assertThat(pathStations.stations).hasSize(3)
+        assertThat(pathStations.pathStations).hasSize(3)
 
         pathStations.add(PathStation(station2, lineStation, 1))
 
-        assertThat(pathStations.stations).hasSize(2)
-        assertThat(pathStations.stations.last().station).isEqualTo(station2)
-        assertThat(pathStations.stations.first().beforeStationId).isNull()
+        assertThat(pathStations.pathStations).hasSize(2)
+        assertThat(pathStations.pathStations.last().station).isEqualTo(station2)
+        assertThat(pathStations.pathStations.first().beforeStationId).isNull()
     }
 
     @Test
