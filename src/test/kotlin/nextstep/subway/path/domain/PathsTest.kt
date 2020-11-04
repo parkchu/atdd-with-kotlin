@@ -19,7 +19,7 @@ class PathsTest {
         paths.add(path)
         paths.add(path2)
 
-        val shortestPath = paths.getShortestPath()
+        val shortestPath = paths.getShortestPath("DISTANCE")
 
         assertThat(shortestPath).isEqualTo(path2)
     }

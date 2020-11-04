@@ -22,12 +22,12 @@ class PathService @Autowired constructor(
     private val pathStations = PathStations()
     private val paths = Paths()
 
-    fun findShortest(startStationId: Long, arrivalStationId: Long): PathResponse {
+    fun findShortest(startStationId: Long, arrivalStationId: Long, type: String): PathResponse {
         init()
         checkCorrectValues(startStationId, arrivalStationId)
         addStartStation(startStationId)
         makePaths(arrivalStationId, startStationId)
-        return PathResponse.of(paths.getShortestPath())
+        return PathResponse.of(paths.getShortestPath(type))
     }
 
     private fun init() {

@@ -35,7 +35,7 @@ class FindShortestPathTest : AcceptanceTest() {
         val response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .`when`()["/paths/?source=${station1.id}&target=${station5.id}"]
+                .`when`()["/paths/?source=${station1.id}&target=${station5.id}&type=DISTANCE"]
                 .then().log().all().extract()
 
         // Then

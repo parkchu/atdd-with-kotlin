@@ -36,7 +36,7 @@ class PathServiceTest {
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
 
-        val path = pathService.findShortest(station1.id, station3.id)
+        val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
 
         assertThat(path.stations.first().id).isEqualTo(station1.id)
         assertThat(path.stations[1].id).isEqualTo(station2.id)
@@ -63,7 +63,7 @@ class PathServiceTest {
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
 
-        val path = pathService.findShortest(station1.id, station3.id)
+        val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
 
         assertThat(path.stations.first().id).isEqualTo(station1.id)
         assertThat(path.stations[1].id).isEqualTo(station4.id)
@@ -84,7 +84,7 @@ class PathServiceTest {
         val pathService = PathService(lineStationRepository, stationRepository)
 
         assertThatThrownBy {
-            pathService.findShortest(1, 3)
+            pathService.findShortest(1, 3, "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역이 존재하지 않는 역일 경우")
     }
 
@@ -102,7 +102,7 @@ class PathServiceTest {
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
-            pathService.findShortest(1, 4)
+            pathService.findShortest(1, 4, "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역과 도착역을 이어주는 경로가 하나도 존재하지 않을경우의 예외처리")
     }
 
@@ -111,7 +111,7 @@ class PathServiceTest {
     fun findPath5() {
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
-            pathService.findShortest(1, 1)
+            pathService.findShortest(1, 1, "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역과 도착역이 같습니다")
     }
 
@@ -124,7 +124,7 @@ class PathServiceTest {
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
-            pathService.findShortest(1, 3)
+            pathService.findShortest(1, 3, "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("도착역이 존재하지 않는 역일 경우")
     }
 }
