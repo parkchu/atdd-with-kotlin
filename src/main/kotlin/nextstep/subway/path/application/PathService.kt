@@ -1,6 +1,9 @@
 package nextstep.subway.path.application
 
+import nextstep.subway.line.domain.LineStation
 import nextstep.subway.line.domain.LineStationRepository
+import nextstep.subway.path.domain.Path
+import nextstep.subway.path.domain.PathStation
 import nextstep.subway.path.domain.PathStations
 import nextstep.subway.path.domain.Paths
 import nextstep.subway.path.dto.PathResponse
@@ -11,27 +14,49 @@ import org.springframework.stereotype.Service
 
 @Service
 class PathService @Autowired constructor(
-        lineStationRepository: LineStationRepository,
-        stationRepository: StationRepository
+        val lineStationRepository: LineStationRepository,
+        val stationRepository: StationRepository
 ) {
-    private val lineStations = lineStationRepository.findAll()
-    private val stations = stationRepository.findAll().toMutableList()
+    private val lineStations
+        get() = lineStationRepository.findAll()
+    private val stations
+        get() = stationRepository.findAll().toMutableList()
     private val pathStations = PathStations()
     private val paths = Paths()
 
     fun findShortest(startStationId: Long, arrivalStationId: Long): PathResponse {
-        makePaths(startStationId, arrivalStationId)
+        addStartStation(startStationId)
+        makePaths(arrivalStationId, startStationId)
         return PathResponse.of(paths.getShortestPath())
     }
 
-    private fun makePaths(startStationId: Long, arrivalStationId: Long, beforeStationId: Long? = null) {
-        val stations = removeStations()
+    private fun addStartStation(startStationId: Long) {
+        val station = stations.find { it.id == startStationId } ?: throw RuntimeException("출발역이 없을 경우")
+        pathStations.add(PathStation(station, LineStation(startStationId, null, 0, 0), null))
+    }
 
+    private fun makePaths(arrivalStationId: Long, beforeStationId: Long) {
+        val stations = removeStations()
+        stations.forEach { station ->
+            val filterLineStations = this.lineStations.filter { checkConnect(it, station.id, beforeStationId) }
+            filterLineStations.forEach { lineStation ->
+                pathStations.add(PathStation(station, lineStation, beforeStationId))
+                if (station.id == arrivalStationId) {
+                    paths.add(Path(pathStations.pathStations))
+                } else {
+                    makePaths(arrivalStationId, station.id)
+                }
+            }
+        }
     }
 
     private fun removeStations(): List<Station> {
         val stations = this.stations
         stations.removeAll(pathStations.getStations())
         return stations
+    }
+
+    private fun checkConnect(lineStation: LineStation, stationId: Long, beforeStationId: Long): Boolean {
+        return (lineStation.stationId == stationId && lineStation.preStationId == beforeStationId) || (lineStation.stationId == beforeStationId && lineStation.preStationId == stationId)
     }
 }
