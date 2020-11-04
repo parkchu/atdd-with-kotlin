@@ -17,21 +17,34 @@ class PathService @Autowired constructor(
         val lineStationRepository: LineStationRepository,
         val stationRepository: StationRepository
 ) {
-    private val lineStations
-        get() = lineStationRepository.findAll()
-    private val stations
-        get() = stationRepository.findAll().toMutableList()
+    private var lineStations: List<LineStation> = listOf()
+    private var stations: List<Station> = listOf()
     private val pathStations = PathStations()
     private val paths = Paths()
 
     fun findShortest(startStationId: Long, arrivalStationId: Long): PathResponse {
+        init()
+        checkCorrectValues(startStationId, arrivalStationId)
         addStartStation(startStationId)
         makePaths(arrivalStationId, startStationId)
         return PathResponse.of(paths.getShortestPath())
     }
 
+    private fun init() {
+        lineStations = lineStationRepository.findAll()
+        stations = stationRepository.findAll()
+        paths.init()
+    }
+
+    private fun checkCorrectValues(startStationId: Long, arrivalStationId: Long) {
+        if (startStationId == arrivalStationId) {
+            throw RuntimeException("출발역과 도착역이 같습니다")
+        }
+        stations.find { it.id == arrivalStationId } ?: throw RuntimeException("도착역이 존재하지 않는 역일 경우")
+    }
+
     private fun addStartStation(startStationId: Long) {
-        val station = stations.find { it.id == startStationId } ?: throw RuntimeException("출발역이 없을 경우")
+        val station = stations.find { it.id == startStationId } ?: throw RuntimeException("출발역이 존재하지 않는 역일 경우")
         pathStations.add(PathStation(station, LineStation(startStationId, null, 0, 0), null))
     }
 
@@ -51,7 +64,7 @@ class PathService @Autowired constructor(
     }
 
     private fun removeStations(): List<Station> {
-        val stations = this.stations
+        val stations = this.stations.toMutableList()
         stations.removeAll(pathStations.getStations())
         return stations
     }

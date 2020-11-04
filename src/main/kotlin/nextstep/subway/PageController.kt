@@ -31,7 +31,7 @@ class PageController {
         return "index"
     }
 
-    @GetMapping(value = ["/paths"], produces = [MediaType.TEXT_HTML_VALUE])
+    @GetMapping(value = ["/path"], produces = [MediaType.TEXT_HTML_VALUE])
     fun path(): String {
         return "index"
     }

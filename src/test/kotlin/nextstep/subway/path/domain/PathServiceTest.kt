@@ -6,6 +6,7 @@ import nextstep.subway.path.application.PathService
 import nextstep.subway.station.domain.Station
 import nextstep.subway.station.domain.StationRepository
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -37,9 +38,93 @@ class PathServiceTest {
 
         val path = pathService.findShortest(station1.id, station3.id)
 
-        assertThat(path.stations.first().id).isEqualTo(stations.first().id)
+        assertThat(path.stations.first().id).isEqualTo(station1.id)
+        assertThat(path.stations[1].id).isEqualTo(station2.id)
+        assertThat(path.stations.last().id).isEqualTo(station3.id)
         assertThat(path.stations).hasSize(3)
         assertThat(path.distance).isEqualTo(20)
         assertThat(path.duration).isEqualTo(20)
+    }
+
+    @DisplayName("2개의 경로중 최단 경로 구하기")
+    @Test
+    fun findPath2() {
+        val lineStation2 = LineStation(2, 1, 10, 10)
+        val lineStation3 = LineStation(3, 2, 10, 10)
+        val lineStation4 = LineStation(1, 4, 5, 5)
+        val lineStation5 = LineStation(4, 3, 5, 8)
+        val lineStations = listOf(lineStation2, lineStation3, lineStation4, lineStation5)
+        `when`(lineStationRepository.findAll()).thenReturn(lineStations)
+        val station1 = Station("출발역", id = 1)
+        val station2 = Station("중간역", id = 2)
+        val station3 = Station("도착역", id = 3)
+        val station4 = Station("주한역", id = 4)
+        val stations = listOf(station1, station2, station3, station4)
+        `when`(stationRepository.findAll()).thenReturn(stations)
+        val pathService = PathService(lineStationRepository, stationRepository)
+
+        val path = pathService.findShortest(station1.id, station3.id)
+
+        assertThat(path.stations.first().id).isEqualTo(station1.id)
+        assertThat(path.stations[1].id).isEqualTo(station4.id)
+        assertThat(path.stations.last().id).isEqualTo(station3.id)
+        assertThat(path.stations).hasSize(3)
+        assertThat(path.distance).isEqualTo(10)
+        assertThat(path.duration).isEqualTo(13)
+    }
+
+    @DisplayName("출발역이 없을 경우")
+    @Test
+    fun findPath3() {
+        val station2 = Station("중간역", id = 2)
+        val station3 = Station("도착역", id = 3)
+        val station4 = Station("주한역", id = 4)
+        val stations = listOf(station2, station3, station4)
+        `when`(stationRepository.findAll()).thenReturn(stations)
+        val pathService = PathService(lineStationRepository, stationRepository)
+
+        assertThatThrownBy {
+            pathService.findShortest(1, 3)
+        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역이 존재하지 않는 역일 경우")
+    }
+
+    @DisplayName("출발역과 도착역을 이어주는 역이 없을 경우")
+    @Test
+    fun findPath4() {
+        val lineStation1 = LineStation(2, 1, 10, 10)
+        val lineStation3 = LineStation(4, 3, 10, 10)
+        val lineStations = listOf(lineStation3, lineStation1)
+        `when`(lineStationRepository.findAll()).thenReturn(lineStations)
+        val station1 = Station("출발역", id = 1)
+        val station2 = Station("중간역", id = 2)
+        val station3 = Station("도착역", id = 4)
+        val stations = listOf(station1, station3, station2)
+        `when`(stationRepository.findAll()).thenReturn(stations)
+        val pathService = PathService(lineStationRepository, stationRepository)
+        assertThatThrownBy {
+            pathService.findShortest(1, 4)
+        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역과 도착역을 이어주는 경로가 하나도 존재하지 않을경우의 예외처리")
+    }
+
+    @DisplayName("출발역과 도착역이 같을 경우")
+    @Test
+    fun findPath5() {
+        val pathService = PathService(lineStationRepository, stationRepository)
+        assertThatThrownBy {
+            pathService.findShortest(1, 1)
+        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("출발역과 도착역이 같습니다")
+    }
+
+    @DisplayName("도착역이 존재하지 않는 경우")
+    @Test
+    fun findPath6() {
+        val station1 = Station("출발역", id = 1)
+        val station2 = Station("중간역", id = 2)
+        val stations = listOf(station1, station2)
+        `when`(stationRepository.findAll()).thenReturn(stations)
+        val pathService = PathService(lineStationRepository, stationRepository)
+        assertThatThrownBy {
+            pathService.findShortest(1, 3)
+        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("도착역이 존재하지 않는 역일 경우")
     }
 }
