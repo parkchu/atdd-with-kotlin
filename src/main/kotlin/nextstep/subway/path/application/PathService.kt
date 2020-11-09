@@ -1,6 +1,7 @@
 package nextstep.subway.path.application
 
 import nextstep.subway.line.domain.LineStationRepository
+import nextstep.subway.path.domain.NewPathApp
 import nextstep.subway.path.domain.PathApp
 import nextstep.subway.path.dto.PathResponse
 import nextstep.subway.station.domain.StationRepository
@@ -13,7 +14,7 @@ class PathService @Autowired constructor(
         val stationRepository: StationRepository
 ) {
     fun findShortest(startStationId: Long, arrivalStationId: Long, type: String): PathResponse {
-        val pathApp = PathApp(lineStationRepository.findAll(), stationRepository.findAll())
+        val pathApp = NewPathApp(lineStationRepository.findAll(), stationRepository.findAll())
         return PathResponse.of(pathApp.getShortestPath(startStationId, arrivalStationId, type))
     }
 }
