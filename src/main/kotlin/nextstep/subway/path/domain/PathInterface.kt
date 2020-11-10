@@ -1,5 +1,5 @@
 package nextstep.subway.path.domain
 
 interface PathInterface {
-    fun getShortestPath(startStationId: Long, arrivalStationId: Long, type: String): Path
+    fun getShortestPath(startPoint: String, arrivalPoint: String): Map<String, List<String>>
 }

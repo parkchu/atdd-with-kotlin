@@ -1,20 +1,26 @@
 package nextstep.subway.path.domain
 
-import nextstep.subway.path.dto.PathStationResponse
-
-class Path(val stations: List<PathStation>) {
-    val distance
-        get() = stations.sumBy { it.distance }
-    val duration
-        get() = stations.sumBy { it.duration }
+class Path(private val points: List<String>, distance: Int, duration: Int) {
+    var distance: Int = distance
+        private set
+    var duration: Int = duration
+        private set
 
     fun add(path: Path): Path {
-        val lineStations = stations.toMutableList()
-        lineStations.add(path.stations.last())
-        return Path(lineStations)
+        val points = this.points.toMutableList()
+        points.add(path.points.last())
+        return Path(points, distance + path.distance, duration + path.duration)
     }
 
-    fun getStationsResponse(): List<PathStationResponse> {
-        return stations.map { PathStationResponse.of(it.station) }
+    fun updateDistance(distance: Int) {
+        this.distance = distance
+    }
+
+    fun updateDuration(duration: Int) {
+        this.duration = duration
+    }
+
+    fun changeMap(): Map<String, List<String>> {
+        return mapOf("경로" to points, "총" to listOf(distance.toString(), duration.toString()))
     }
 }

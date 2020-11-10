@@ -13,8 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.junit.jupiter.MockitoSettings
+import org.mockito.quality.Strictness
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class PathServiceTest {
     @Mock
     private lateinit var lineStationRepository: LineStationRepository
@@ -34,6 +38,12 @@ class PathServiceTest {
         val station3 = Station("도착역", id = 3)
         val stations = listOf(station1, station2, station3)
         `when`(stationRepository.findAll()).thenReturn(stations)
+        `when`(stationRepository.findById(station1.id)).thenReturn(Optional.of(station1))
+        `when`(stationRepository.findById(station2.id)).thenReturn(Optional.of(station2))
+        `when`(stationRepository.findById(station3.id)).thenReturn(Optional.of(station3))
+        `when`(stationRepository.findByName(station1.name)).thenReturn(station1)
+        `when`(stationRepository.findByName(station2.name)).thenReturn(station2)
+        `when`(stationRepository.findByName(station3.name)).thenReturn(station3)
         val pathService = PathService(lineStationRepository, stationRepository)
 
         val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
@@ -61,6 +71,13 @@ class PathServiceTest {
         val station4 = Station("주한역", id = 4)
         val stations = listOf(station1, station2, station3, station4)
         `when`(stationRepository.findAll()).thenReturn(stations)
+        `when`(stationRepository.findById(station1.id)).thenReturn(Optional.of(station1))
+        `when`(stationRepository.findById(station2.id)).thenReturn(Optional.of(station2))
+        `when`(stationRepository.findById(station3.id)).thenReturn(Optional.of(station3))
+        `when`(stationRepository.findByName(station1.name)).thenReturn(station1)
+        `when`(stationRepository.findByName(station2.name)).thenReturn(station2)
+        `when`(stationRepository.findByName(station3.name)).thenReturn(station3)
+        `when`(stationRepository.findByName(station4.name)).thenReturn(station4)
         val pathService = PathService(lineStationRepository, stationRepository)
 
         val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
@@ -81,6 +98,7 @@ class PathServiceTest {
         val station4 = Station("주한역", id = 4)
         val stations = listOf(station2, station3, station4)
         `when`(stationRepository.findAll()).thenReturn(stations)
+
         val pathService = PathService(lineStationRepository, stationRepository)
 
         assertThatThrownBy {
@@ -100,11 +118,17 @@ class PathServiceTest {
         val station3 = Station("도착역", id = 4)
         val stations = listOf(station1, station3, station2)
         `when`(stationRepository.findAll()).thenReturn(stations)
+        `when`(stationRepository.findById(station1.id)).thenReturn(Optional.of(station1))
+        `when`(stationRepository.findById(station2.id)).thenReturn(Optional.of(station2))
+        `when`(stationRepository.findById(station3.id)).thenReturn(Optional.of(station3))
+        `when`(stationRepository.findByName(station1.name)).thenReturn(station1)
+        `when`(stationRepository.findByName(station2.name)).thenReturn(station2)
+        `when`(stationRepository.findByName(station3.name)).thenReturn(station3)
         val pathService = PathService(lineStationRepository, stationRepository)
 
         val path = pathService.findShortest(1, 4, "DISTANCE")
 
-        assertThat(path.distance).isEqualTo(NewPathApp.INF)
+        assertThat(path.distance).isEqualTo(PathApp.INF)
     }
 
     @DisplayName("출발역과 도착역이 같을 경우")
@@ -126,6 +150,6 @@ class PathServiceTest {
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
             pathService.findShortest(1, 3, "DISTANCE")
-        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("도착역이 존재하지 않습니다.")
+        }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("해당 역은 존재하지 않는다.")
     }
 }
