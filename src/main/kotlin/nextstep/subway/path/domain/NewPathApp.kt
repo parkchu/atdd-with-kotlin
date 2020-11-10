@@ -13,7 +13,7 @@ class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station
     }
 
     fun setPoint(name: String) {
-        checkSamePoint(name)
+        checkContainsPoint(name)
         val smallMap = mutableMapOf<String, Int>()
         smallMap[name] = 0
         _paths2[name] = smallMap
@@ -26,10 +26,26 @@ class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station
         }
     }
 
-    private fun checkSamePoint(name: String) {
+    private fun checkContainsPoint(name: String) {
         if (_paths2.contains(name)) {
             throw IllegalArgumentException("$name 은 존재하는 포인트입니다.")
         }
+    }
+
+    fun setBetweenValue(point1: String, point2: String, betweenValue: Int) {
+        checkSamePoint(point1, point2)
+        getPathsIt(point1)[point2] = betweenValue
+        getPathsIt(point2)[point1] = betweenValue
+    }
+
+    private fun checkSamePoint(point1: String, point2: String) {
+        if (point1 == point2) {
+            throw java.lang.IllegalArgumentException("$point1 과 $point2 은 같은 포인트입니다.")
+        }
+    }
+
+    private fun getPathsIt(name: String): MutableMap<String, Int> {
+        return _paths2[name] ?: throw IllegalArgumentException("$name 은 존재하지 않는 포인트입니다.")
     }
 
     fun getPaths(): Map<String, Map<String, Int>> = _paths2.toMap()
