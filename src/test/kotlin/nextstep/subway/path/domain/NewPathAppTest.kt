@@ -100,4 +100,20 @@ class NewPathAppTest {
             pathApp.setBetweenValue(pathName1, pathName1, 10)
         }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("$pathName1 과 $pathName1 은 같은 포인트입니다.")
     }
+
+    @Test
+    fun findShortPath() {
+        val pathApp = NewPathApp(listOf(), listOf())
+        val pathName1 = "1"
+        val pathName2 = "2"
+        val pathName3 = "3"
+        pathApp.setPoint(pathName1)
+        pathApp.setPoint(pathName2)
+        pathApp.setPoint(pathName3)
+
+        pathApp.setBetweenValue(pathName1, pathName2, 10)
+        pathApp.setBetweenValue(pathName2, pathName3, 5)
+
+        assertThat(pathApp.getShortPath(pathName1, pathName3)).isEqualTo(15)
+    }
 }

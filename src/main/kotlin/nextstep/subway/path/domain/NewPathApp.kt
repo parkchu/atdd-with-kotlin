@@ -7,6 +7,7 @@ class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station
     private val _paths: MutableMap<Long, MutableMap<Long, Path>> = mutableMapOf()
     private val _paths2: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     private val _visitStation: MutableList<Long> = mutableListOf()
+    private val _visitStation2: MutableList<String> = mutableListOf()
 
     init {
         stations.forEach { _paths[it.id] = makeMap(it.id) }
@@ -44,11 +45,51 @@ class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station
         }
     }
 
-    private fun getPathsIt(name: String): MutableMap<String, Int> {
-        return _paths2[name] ?: throw IllegalArgumentException("$name 은 존재하지 않는 포인트입니다.")
+    private fun getPathsIt(point: String): MutableMap<String, Int> {
+        return _paths2[point] ?: throw IllegalArgumentException("$point 은 존재하지 않는 포인트입니다.")
+    }
+
+    fun getShortPath(startPoint: String, arrivalPoint: String): Int {
+        val paths = dijkstra2(startPoint)
+        return paths[arrivalPoint] ?: throw IllegalArgumentException("$arrivalPoint 은 존재하지 않는 포인트 입니다.")
+    }
+
+    private fun dijkstra2(startPoint: String): Map<String, Int> {
+        _visitStation2.clear()
+        _visitStation2.add(startPoint)
+        val paths = getPathsItToMap(startPoint).toMutableMap()
+        repeat(paths.size - 1) {
+            val pointName = getMinStationId2(startPoint, paths)
+            _visitStation2.add(pointName)
+            val paths2 = getPathsItToMap(pointName)
+            paths2.forEach {
+                val path = paths.getValue(pointName)
+                if (path + it.value < paths.getValue(it.key)) {
+                    paths[it.key] = path + it.value
+                }
+            }
+        }
+        return paths
+    }
+
+    private fun getPathsItToMap(point: String): Map<String, Int> {
+        return _paths2[point] ?: throw IllegalArgumentException("$point 은 존재하지 않는 포인트입니다.")
+    }
+
+    private fun getMinStationId2(startPoint: String, paths: Map<String, Int>): String {
+        var betweenValue: Int = INF
+        var pointName: String = startPoint
+        paths.forEach {
+            if (it.value < betweenValue && !_visitStation2.contains(it.key)) {
+                betweenValue = it.value
+                pointName = it.key
+            }
+        }
+        return pointName
     }
 
     fun getPaths(): Map<String, Map<String, Int>> = _paths2.toMap()
+
 
     private fun makeMap(stationId: Long): MutableMap<Long, Path> {
         val smallMap = mutableMapOf<Long, Path>()
