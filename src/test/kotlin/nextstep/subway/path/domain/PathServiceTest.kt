@@ -128,7 +128,7 @@ class PathServiceTest {
 
         val path = pathService.findShortest(1, 4, "DISTANCE")
 
-        assertThat(path.distance).isEqualTo(PathApp.INF)
+        assertThat(path.distance).isEqualTo(Paths.INF)
     }
 
     @DisplayName("출발역과 도착역이 같을 경우")
