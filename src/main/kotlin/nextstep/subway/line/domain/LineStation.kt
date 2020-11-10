@@ -25,4 +25,8 @@ class LineStation(
         fun updatePreStationTo(id: Long?) {
                 preStationId = id
         }
+
+        fun checkConnect(stationId: Long, stationId2: Long): Boolean {
+                return (this.stationId == stationId && this.preStationId == stationId2) || (this.stationId == stationId2 && this.preStationId == stationId)
+        }
 }

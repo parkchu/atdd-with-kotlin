@@ -5,11 +5,34 @@ import nextstep.subway.station.domain.Station
 
 class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station>) : PathInterface {
     private val _paths: MutableMap<Long, MutableMap<Long, Path>> = mutableMapOf()
+    private val _paths2: MutableMap<String, MutableMap<String, Int>> = mutableMapOf()
     private val _visitStation: MutableList<Long> = mutableListOf()
 
     init {
         stations.forEach { _paths[it.id] = makeMap(it.id) }
     }
+
+    fun setPoint(name: String) {
+        checkSamePoint(name)
+        val smallMap = mutableMapOf<String, Int>()
+        smallMap[name] = 0
+        _paths2[name] = smallMap
+        _paths2.forEach { path1 ->
+            _paths2.forEach { path2 ->
+                if (!path1.value.contains(path2.key)) {
+                    path1.value[path2.key] = INF
+                }
+            }
+        }
+    }
+
+    private fun checkSamePoint(name: String) {
+        if (_paths2.contains(name)) {
+            throw IllegalArgumentException("$name 은 존재하는 포인트입니다.")
+        }
+    }
+
+    fun getPaths(): Map<String, Map<String, Int>> = _paths2.toMap()
 
     private fun makeMap(stationId: Long): MutableMap<Long, Path> {
         val smallMap = mutableMapOf<Long, Path>()
@@ -34,11 +57,7 @@ class NewPathApp(val lineStations: List<LineStation>, val stations: List<Station
     }
 
     private fun filterLineStations(stationId: Long, stationId2: Long): List<LineStation> {
-        return lineStations.filter { checkConnect(it, stationId, stationId2) }
-    }
-
-    private fun checkConnect(lineStation: LineStation, stationId: Long, stationId2: Long): Boolean {
-        return (lineStation.stationId == stationId && lineStation.preStationId == stationId2) || (lineStation.stationId == stationId2 && lineStation.preStationId == stationId)
+        return lineStations.filter { it.checkConnect(stationId, stationId2) }
     }
 
     override fun getShortestPath(startStationId: Long, arrivalStationId: Long, type: String): Path {
