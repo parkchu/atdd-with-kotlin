@@ -19,19 +19,19 @@ class PathService @Autowired constructor(
     val pathApp = PathApp()
     val paths = Paths()
 
-    fun findShortest(startStationId: Long, arrivalStationId: Long, type: String): PathResponse {
-        init()
-        val startStation = getStation(startStationId)
-        val arrivalStation = getStation(arrivalStationId)
-        val path = pathApp.getShortestPath(paths, startStation.name, arrivalStation.name)
+    fun findShortest(stationIds: List<Long>, type: String): PathResponse {
+        init(type)
+        paths.setStartPoint(getStationName(stationIds.first()))
+        paths.setArrivalPoint(getStationName(stationIds.last()))
+        val path = pathApp.getShortestPath(paths, type)
         return PathResponse.of(
-                (path["경로"] ?: error("")).map { PathStationResponse.of(getStationOfName(it)) },
+                (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
                 (path["총"] ?: error("")).map { it.toInt() }
         )
     }
 
-    private fun init() {
-        paths.init()
+    private fun init(type: String) {
+        paths.clearPaths()
         val lineStations = lineStationRepository.findAll()
         val stations = stationRepository.findAll()
         stations.forEach { paths.setPoint(it.name) }
@@ -40,23 +40,30 @@ class PathService @Autowired constructor(
             val station = stations2.first()
             stations2.remove(station)
             stations2.forEach { station2 ->
-                val lineStation = lineStations.filter { it.checkConnect(station.id, station2.id) }.minBy { it.distance }
-                setBetweenValue(lineStation, station, station2)
+                val filterLineStations = lineStations.filter { it.checkConnect(station.id, station2.id) }
+                val lineStation =
+                        if (type == "DISTANCE") {
+                            filterLineStations.minBy { it.distance }
+                        } else {
+                            filterLineStations.minBy { it.duration }
+                        }
+                setBetweenValue(lineStation, station.name, station2.name)
             }
         }
     }
 
-    private fun setBetweenValue(lineStation: LineStation?, station1: Station, station2: Station) {
+    private fun setBetweenValue(lineStation: LineStation?, point1: String, point2: String) {
         if (lineStation != null) {
-            paths.setBetweenValue(station1.name, station2.name, lineStation.distance, lineStation.duration)
+            val distanceAndDuration = listOf(lineStation.distance, lineStation.duration)
+            paths.setBetweenValue(point1, point2, distanceAndDuration)
         }
     }
 
-    private fun getStation(stationId: Long): Station {
-        return stationRepository.findById(stationId).orElseThrow { IllegalArgumentException("해당 역은 존재하지 않는다.") }
+    private fun getStationName(stationId: Long): String {
+        return stationRepository.findById(stationId).orElseThrow { IllegalArgumentException("해당 역은 존재하지 않는다.") }.name
     }
 
-    private fun getStationOfName(name: String): Station {
+    private fun getStationByName(name: String): Station {
         return stationRepository.findByName(name) ?: throw IllegalArgumentException("해당 역은 존재하지 않는다.")
     }
 }

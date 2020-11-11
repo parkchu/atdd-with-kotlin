@@ -3,9 +3,13 @@ package nextstep.subway.path.domain
 class Paths {
     private val _paths: MutableMap<String, MutableMap<String, Path>> = mutableMapOf()
     private val _visitPoint: MutableList<String> = mutableListOf()
+    private val _points = mutableMapOf("출발지점" to "", "도착지점" to "")
 
-    fun init() {
+    fun clearPaths() {
         _paths.clear()
+    }
+
+    fun clearVisitPoint() {
         _visitPoint.clear()
     }
 
@@ -29,14 +33,12 @@ class Paths {
         }
     }
 
-    fun setBetweenValue(point1: String, point2: String, distance: Int, duration: Int) {
+    fun setBetweenValue(point1: String, point2: String, distanceAndDuration: List<Int>) {
         checkSamePoint(point1, point2)
         val path1 = getPathsIt(point1)[point2]
         val path2 = getPathsIt(point2)[point1]
-        path1!!.updateDistance(distance)
-        path1.updateDuration(duration)
-        path2!!.updateDistance(distance)
-        path2.updateDuration(duration)
+        updatePath(path1, distanceAndDuration)
+        updatePath(path2, distanceAndDuration)
     }
 
     private fun checkSamePoint(point1: String, point2: String) {
@@ -49,6 +51,13 @@ class Paths {
         return _paths[point] ?: throw IllegalArgumentException("$point 은 존재하지 않는 포인트입니다.")
     }
 
+    private fun updatePath(path: Path?, distanceAndDuration: List<Int>) {
+        val distance = distanceAndDuration.first()
+        val duration = distanceAndDuration.last()
+        path!!.updateDistance(distance)
+        path.updateDuration(duration)
+    }
+
     fun getPaths(): Map<String, Map<String, Path>> = _paths.toMap()
 
     fun addVisitPoint(point: String) {
@@ -59,7 +68,7 @@ class Paths {
         return _paths[point] ?: throw IllegalArgumentException("$point 은 존재하지 않는 포인트입니다.")
     }
 
-    fun getMinStationId2(startPoint: String, paths: Map<String, Path>): String {
+    fun getMinPoint(startPoint: String, paths: Map<String, Path>): String {
         var betweenValue: Int = INF
         var pointName: String = startPoint
         paths.forEach {
@@ -68,7 +77,29 @@ class Paths {
                 pointName = it.key
             }
         }
+        addVisitPoint(pointName)
         return pointName
+    }
+
+    fun setStartPoint(point: String) {
+        _points["출발지점"] = point
+    }
+
+    fun setArrivalPoint(point: String) {
+        _points["도착지점"] = point
+    }
+
+    fun getStartPoint(): String {
+        return _points.getValue("출발지점")
+    }
+
+    fun getArrivalPoint(): String {
+        return _points.getValue("도착지점")
+    }
+
+    fun forEach(point: String, updatePath: (path: Map.Entry<String, Path>) -> Unit) {
+        val paths = getPathsItToMap(point)
+        paths.forEach { updatePath(it) }
     }
 
     companion object {

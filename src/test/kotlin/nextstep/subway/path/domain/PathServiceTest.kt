@@ -46,7 +46,7 @@ class PathServiceTest {
         `when`(stationRepository.findByName(station3.name)).thenReturn(station3)
         val pathService = PathService(lineStationRepository, stationRepository)
 
-        val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
+        val path = pathService.findShortest(listOf(station1.id, station3.id), "DISTANCE")
 
         assertThat(path.stations.first().id).isEqualTo(station1.id)
         assertThat(path.stations[1].id).isEqualTo(station2.id)
@@ -80,7 +80,7 @@ class PathServiceTest {
         `when`(stationRepository.findByName(station4.name)).thenReturn(station4)
         val pathService = PathService(lineStationRepository, stationRepository)
 
-        val path = pathService.findShortest(station1.id, station3.id, "DISTANCE")
+        val path = pathService.findShortest(listOf(station1.id, station3.id), "DISTANCE")
 
         assertThat(path.stations.first().id).isEqualTo(station1.id)
         assertThat(path.stations[1].id).isEqualTo(station4.id)
@@ -102,7 +102,7 @@ class PathServiceTest {
         val pathService = PathService(lineStationRepository, stationRepository)
 
         assertThatThrownBy {
-            pathService.findShortest(1, 3, "DISTANCE")
+            pathService.findShortest(listOf(1, 3), "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("해당 역은 존재하지 않는다.")
     }
 
@@ -126,7 +126,7 @@ class PathServiceTest {
         `when`(stationRepository.findByName(station3.name)).thenReturn(station3)
         val pathService = PathService(lineStationRepository, stationRepository)
 
-        val path = pathService.findShortest(1, 4, "DISTANCE")
+        val path = pathService.findShortest(listOf(1, 4), "DISTANCE")
 
         assertThat(path.distance).isEqualTo(Paths.INF)
     }
@@ -136,7 +136,7 @@ class PathServiceTest {
     fun findPath5() {
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
-            pathService.findShortest(1, 1, "DISTANCE")
+            pathService.findShortest(listOf(1, 1), "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("해당 역은 존재하지 않는다.")
     }
 
@@ -149,7 +149,7 @@ class PathServiceTest {
         `when`(stationRepository.findAll()).thenReturn(stations)
         val pathService = PathService(lineStationRepository, stationRepository)
         assertThatThrownBy {
-            pathService.findShortest(1, 3, "DISTANCE")
+            pathService.findShortest(listOf(1, 3), "DISTANCE")
         }.isInstanceOf(RuntimeException::class.java).hasMessageContaining("해당 역은 존재하지 않는다.")
     }
 }
