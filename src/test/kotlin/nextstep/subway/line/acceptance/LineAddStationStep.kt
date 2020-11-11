@@ -19,7 +19,7 @@ object LineAddStationStep {
         params["preStationId"] = preStationId
         params["stationId"] = stationId
         params["distance"] = 10
-        params["time"] = 10
+        params["duration"] = 10
         return RestAssured
                 .given()
                 .log().all()
