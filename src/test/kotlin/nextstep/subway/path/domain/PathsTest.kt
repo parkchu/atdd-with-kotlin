@@ -15,16 +15,16 @@ class PathsTest {
         val pathsMap = paths.getPaths()
 
         val inf = Paths.INF
-        assertThat((pathsMap.getValue("1")["1"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("1")["2"] ?: error("")).distance).isEqualTo(inf)
-        assertThat((pathsMap.getValue("1")["3"] ?: error("")).distance).isEqualTo(inf)
+        assertThat((pathsMap.getValue("1")["1"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("1")["2"] ?: error("")).mainValue).isEqualTo(inf)
+        assertThat((pathsMap.getValue("1")["3"] ?: error("")).mainValue).isEqualTo(inf)
         assertThat((pathsMap.getValue("1")["4"])).isNull()
-        assertThat((pathsMap.getValue("2")["2"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("2")["1"] ?: error("")).distance).isEqualTo(inf)
-        assertThat((pathsMap.getValue("2")["3"] ?: error("")).distance).isEqualTo(inf)
-        assertThat((pathsMap.getValue("3")["3"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("3")["1"] ?: error("")).distance).isEqualTo(inf)
-        assertThat((pathsMap.getValue("3")["2"] ?: error("")).distance).isEqualTo(inf)
+        assertThat((pathsMap.getValue("2")["2"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("2")["1"] ?: error("")).mainValue).isEqualTo(inf)
+        assertThat((pathsMap.getValue("2")["3"] ?: error("")).mainValue).isEqualTo(inf)
+        assertThat((pathsMap.getValue("3")["3"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("3")["1"] ?: error("")).mainValue).isEqualTo(inf)
+        assertThat((pathsMap.getValue("3")["2"] ?: error("")).mainValue).isEqualTo(inf)
     }
 
     @Test
@@ -53,16 +53,16 @@ class PathsTest {
 
         val pathsMap = paths.getPaths()
         val inf = Paths.INF
-        assertThat((pathsMap.getValue("1")["1"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("1")["2"] ?: error("")).distance).isEqualTo(10)
-        assertThat((pathsMap.getValue("1")["3"] ?: error("")).distance).isEqualTo(inf)
+        assertThat((pathsMap.getValue("1")["1"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("1")["2"] ?: error("")).mainValue).isEqualTo(10)
+        assertThat((pathsMap.getValue("1")["3"] ?: error("")).mainValue).isEqualTo(inf)
         assertThat((pathsMap.getValue("1")["4"])).isNull()
-        assertThat((pathsMap.getValue("2")["2"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("2")["1"] ?: error("")).distance).isEqualTo(10)
-        assertThat((pathsMap.getValue("2")["3"] ?: error("")).distance).isEqualTo(5)
-        assertThat((pathsMap.getValue("3")["3"] ?: error("")).distance).isEqualTo(0)
-        assertThat((pathsMap.getValue("3")["1"] ?: error("")).distance).isEqualTo(inf)
-        assertThat((pathsMap.getValue("3")["2"] ?: error("")).distance).isEqualTo(5)
+        assertThat((pathsMap.getValue("2")["2"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("2")["1"] ?: error("")).mainValue).isEqualTo(10)
+        assertThat((pathsMap.getValue("2")["3"] ?: error("")).mainValue).isEqualTo(5)
+        assertThat((pathsMap.getValue("3")["3"] ?: error("")).mainValue).isEqualTo(0)
+        assertThat((pathsMap.getValue("3")["1"] ?: error("")).mainValue).isEqualTo(inf)
+        assertThat((pathsMap.getValue("3")["2"] ?: error("")).mainValue).isEqualTo(5)
     }
 
     @Test

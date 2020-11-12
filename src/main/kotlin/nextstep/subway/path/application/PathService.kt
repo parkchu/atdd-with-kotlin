@@ -2,8 +2,7 @@ package nextstep.subway.path.application
 
 import nextstep.subway.line.domain.LineStation
 import nextstep.subway.line.domain.LineStationRepository
-import nextstep.subway.path.domain.PathApp
-import nextstep.subway.path.domain.Paths
+import nextstep.subway.path.domain.*
 import nextstep.subway.path.dto.PathResponse
 import nextstep.subway.path.dto.PathStationResponse
 import nextstep.subway.station.domain.Station
@@ -23,39 +22,32 @@ class PathService @Autowired constructor(
         init(type)
         paths.setStartPoint(getStationName(stationIds.first()))
         paths.setArrivalPoint(getStationName(stationIds.last()))
-        val path = pathApp.getShortestPath(paths, type)
+        val path = pathApp.getShortestPath(paths)
+        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() })
         return PathResponse.of(
                 (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
-                (path["총"] ?: error("")).map { it.toInt() }
+                totalValue.get(type)
         )
     }
 
     private fun init(type: String) {
         paths.clearPaths()
-        val lineStations = lineStationRepository.findAll()
-        val stations = stationRepository.findAll()
+        val stations = PathStations(stationRepository.findAll())
         stations.forEach { paths.setPoint(it.name) }
-        val stations2 = stations.toMutableList()
-        while (stations2.isNotEmpty()) {
-            val station = stations2.first()
-            stations2.remove(station)
-            stations2.forEach { station2 ->
-                val filterLineStations = lineStations.filter { it.checkConnect(station.id, station2.id) }
-                val lineStation =
-                        if (type == "DISTANCE") {
-                            filterLineStations.minBy { it.distance }
-                        } else {
-                            filterLineStations.minBy { it.duration }
-                        }
-                setBetweenValue(lineStation, station.name, station2.name)
-            }
-        }
+        stations.loopStationsNotEmpty { setBetweenValue(it, type) }
     }
 
-    private fun setBetweenValue(lineStation: LineStation?, point1: String, point2: String) {
+    private fun setBetweenValue(stations: List<Station>, type: String) {
+        val lineStations = lineStationRepository.findAll()
+        val pathLineStations = PathLineStations(lineStations.filter { it.checkConnect(stations.first().id, stations.last().id) })
+        val lineStation = pathLineStations.getMinLineStation(type)
+        pathsSetBetweenValue(lineStation, stations, type)
+    }
+
+    private fun pathsSetBetweenValue(lineStation: LineStation?, stations: List<Station>, type: String) {
         if (lineStation != null) {
-            val distanceAndDuration = listOf(lineStation.distance, lineStation.duration)
-            paths.setBetweenValue(point1, point2, distanceAndDuration)
+            val totalValue = TotalValue(listOf(lineStation.distance, lineStation.duration))
+            paths.setBetweenValue(stations.first().name, stations.last().name, totalValue.get(type))
         }
     }
 

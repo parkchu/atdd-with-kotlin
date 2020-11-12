@@ -21,8 +21,8 @@ class PathAppTest {
         paths.setBetweenValue(pathName2, pathName3, listOf(5, 5))
 
         val pathApp = PathApp()
-        assertThat((pathApp.getShortestPath(paths, "DISTANCE")["총"] ?: error("")).first()).isEqualTo("15")
-        assertThat((pathApp.getShortestPath(paths, "DISTANCE")["총"] ?: error("")).last()).isEqualTo("15")
+        assertThat((pathApp.getShortestPath(paths)["총"] ?: error("")).first()).isEqualTo("15")
+        assertThat((pathApp.getShortestPath(paths)["총"] ?: error("")).last()).isEqualTo("15")
     }
 
     @Test
@@ -42,7 +42,7 @@ class PathAppTest {
         paths.setBetweenValue(pathName2, pathName3, listOf(10, 1))
 
         val pathApp = PathApp()
-        assertThat((pathApp.getShortestPath(paths, "DURATION")["총"] ?: error("")).first()).isEqualTo("15")
-        assertThat((pathApp.getShortestPath(paths, "DURATION")["총"] ?: error("")).last()).isEqualTo("5")
+        assertThat((pathApp.getShortestPath(paths)["총"] ?: error("")).first()).isEqualTo("8")
+        assertThat((pathApp.getShortestPath(paths)["총"] ?: error("")).last()).isEqualTo("15")
     }
 }

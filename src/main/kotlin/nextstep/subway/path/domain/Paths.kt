@@ -18,13 +18,7 @@ class Paths {
         val smallMap = mutableMapOf<String, Path>()
         smallMap[name] = Path(listOf(name), 0, 0)
         _paths[name] = smallMap
-        _paths.forEach { path1 ->
-            _paths.forEach { path2 ->
-                if (!path1.value.contains(path2.key)) {
-                    path1.value[path2.key] = Path(listOf(path1.key, path2.key), INF, INF)
-                }
-            }
-        }
+        _paths.forEach { loopPaths2(it) }
     }
 
     private fun checkContainsPoint(name: String) {
@@ -33,12 +27,24 @@ class Paths {
         }
     }
 
-    fun setBetweenValue(point1: String, point2: String, distanceAndDuration: List<Int>) {
+    private fun loopPaths2(path: Map.Entry<String, MutableMap<String, Path>>) {
+        _paths.forEach { setPath(!path.value.contains(it.key), listOf(path, it)) }
+    }
+
+    private fun setPath(boolean: Boolean, list: List<Map.Entry<String, MutableMap<String, Path>>>) {
+        if (boolean) {
+            val path1 = list.first()
+            val path2 = list.last()
+            path1.value[path2.key] = Path(listOf(path1.key, path2.key), INF, INF)
+        }
+    }
+
+    fun setBetweenValue(point1: String, point2: String, totalValue: List<Int>) {
         checkSamePoint(point1, point2)
         val path1 = getPathsIt(point1)[point2]
         val path2 = getPathsIt(point2)[point1]
-        updatePath(path1, distanceAndDuration)
-        updatePath(path2, distanceAndDuration)
+        updatePath(path1, totalValue)
+        updatePath(path2, totalValue)
     }
 
     private fun checkSamePoint(point1: String, point2: String) {
@@ -51,11 +57,11 @@ class Paths {
         return _paths[point] ?: throw IllegalArgumentException("$point 은 존재하지 않는 포인트입니다.")
     }
 
-    private fun updatePath(path: Path?, distanceAndDuration: List<Int>) {
-        val distance = distanceAndDuration.first()
-        val duration = distanceAndDuration.last()
-        path!!.updateDistance(distance)
-        path.updateDuration(duration)
+    private fun updatePath(path: Path?, totalValue: List<Int>) {
+        val mainValue = totalValue.first()
+        val subValue = totalValue.last()
+        path!!.updateMain(mainValue)
+        path.updateSub(subValue)
     }
 
     fun getPaths(): Map<String, Map<String, Path>> = _paths.toMap()
@@ -69,14 +75,8 @@ class Paths {
     }
 
     fun getMinPoint(startPoint: String, paths: Map<String, Path>): String {
-        var betweenValue: Int = INF
-        var pointName: String = startPoint
-        paths.forEach {
-            if (it.value.distance < betweenValue && !_visitPoint.contains(it.key)) {
-                betweenValue = it.value.distance
-                pointName = it.key
-            }
-        }
+        val minPoint = MinPoint(startPoint, _visitPoint)
+        val pointName = minPoint.get(paths)
         addVisitPoint(pointName)
         return pointName
     }
