@@ -1,7 +1,7 @@
 package nextstep.subway.line.acceptance
 
 import nextstep.subway.AcceptanceTest
-import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_등록되어_있음
+import nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_목록_조회_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_실패됨
 import nextstep.subway.line.acceptance.LineAcceptanceStep.노선_생성_요청
@@ -37,7 +37,7 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun createLine2() {
         // given
         // 지하철_노선_등록되어_있음
-        노선_등록되어_있음("신분당선", "bg-red-600", "5")
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600", "5")
 
         // when
         // 지하철_노선_생성_요청
@@ -105,7 +105,7 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun deleteLine() {
         // given
         // 지하철_노선_등록되어_있음
-        val lineResponse = 노선_등록되어_있음("피카츄선", "bg-red-600", "5")
+        val lineResponse = 지하철_노선_등록되어_있음("피카츄선", "bg-red-600", "5")
 
         // when
         // 지하철_노선_제거_요청

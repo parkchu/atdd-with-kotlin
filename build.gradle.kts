@@ -31,6 +31,9 @@ dependencies {
 	// jgraph
 	implementation("org.jgrapht:jgrapht-core:1.0.1")
 
+	// jwt
+	implementation("io.jsonwebtoken:jjwt:0.9.1")
+
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

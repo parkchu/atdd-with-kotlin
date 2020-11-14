@@ -11,7 +11,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 object LineAcceptanceStep {
-    fun 노선_등록되어_있음(name: String, color: String, intervalTime: String): ExtractableResponse<Response> {
+    fun 지하철_노선_등록되어_있음(name: String, color: String, intervalTime: String): ExtractableResponse<Response> {
         return 노선_생성_요청(name = name, color = color, intervalTime = intervalTime)
     }
 
