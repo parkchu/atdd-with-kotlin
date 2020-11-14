@@ -15,6 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 class PathController @Autowired constructor(val pathService: PathService) {
     @GetMapping("/")
     fun findShortestPath(@RequestParam("source") startStationId: Long, @RequestParam("target") arrivalStationId: Long, @RequestParam("type") type: String): ResponseEntity<PathResponse> {
-        return ResponseEntity.ok().body(pathService.findShortest(startStationId, arrivalStationId, type))
+        return ResponseEntity.ok().body(pathService.findShortest(listOf(startStationId, arrivalStationId), type))
     }
 }

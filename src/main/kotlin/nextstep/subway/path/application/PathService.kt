@@ -2,8 +2,7 @@ package nextstep.subway.path.application
 
 import nextstep.subway.line.domain.LineStation
 import nextstep.subway.line.domain.LineStationRepository
-import nextstep.subway.path.domain.PathApp
-import nextstep.subway.path.domain.Paths
+import nextstep.subway.path.domain.*
 import nextstep.subway.path.dto.PathResponse
 import nextstep.subway.path.dto.PathStationResponse
 import nextstep.subway.station.domain.Station
@@ -19,44 +18,44 @@ class PathService @Autowired constructor(
     val pathApp = PathApp()
     val paths = Paths()
 
-    fun findShortest(startStationId: Long, arrivalStationId: Long, type: String): PathResponse {
-        init()
-        val startStation = getStation(startStationId)
-        val arrivalStation = getStation(arrivalStationId)
-        val path = pathApp.getShortestPath(paths, startStation.name, arrivalStation.name)
+    fun findShortest(stationIds: List<Long>, type: String): PathResponse {
+        init(type)
+        paths.setStartPoint(getStationName(stationIds.first()))
+        paths.setArrivalPoint(getStationName(stationIds.last()))
+        val path = pathApp.getShortestPath(paths)
+        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() })
         return PathResponse.of(
-                (path["경로"] ?: error("")).map { PathStationResponse.of(getStationOfName(it)) },
-                (path["총"] ?: error("")).map { it.toInt() }
+                (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
+                totalValue.get(type)
         )
     }
 
-    private fun init() {
-        paths.init()
-        val lineStations = lineStationRepository.findAll()
-        val stations = stationRepository.findAll()
+    private fun init(type: String) {
+        paths.clearPaths()
+        val stations = PathStations(stationRepository.findAll())
         stations.forEach { paths.setPoint(it.name) }
-        val stations2 = stations.toMutableList()
-        while (stations2.isNotEmpty()) {
-            val station = stations2.first()
-            stations2.remove(station)
-            stations2.forEach { station2 ->
-                val lineStation = lineStations.filter { it.checkConnect(station.id, station2.id) }.minBy { it.distance }
-                setBetweenValue(lineStation, station, station2)
-            }
-        }
+        stations.loopStationsNotEmpty { setBetweenValue(it, type) }
     }
 
-    private fun setBetweenValue(lineStation: LineStation?, station1: Station, station2: Station) {
+    private fun setBetweenValue(stations: List<Station>, type: String) {
+        val lineStations = lineStationRepository.findAll()
+        val pathLineStations = PathLineStations(lineStations.filter { it.checkConnect(stations.first().id, stations.last().id) })
+        val lineStation = pathLineStations.getMinLineStation(type)
+        pathsSetBetweenValue(lineStation, stations, type)
+    }
+
+    private fun pathsSetBetweenValue(lineStation: LineStation?, stations: List<Station>, type: String) {
         if (lineStation != null) {
-            paths.setBetweenValue(station1.name, station2.name, lineStation.distance, lineStation.duration)
+            val totalValue = TotalValue(listOf(lineStation.distance, lineStation.duration))
+            paths.setBetweenValue(stations.first().name, stations.last().name, totalValue.get(type))
         }
     }
 
-    private fun getStation(stationId: Long): Station {
-        return stationRepository.findById(stationId).orElseThrow { IllegalArgumentException("해당 역은 존재하지 않는다.") }
+    private fun getStationName(stationId: Long): String {
+        return stationRepository.findById(stationId).orElseThrow { IllegalArgumentException("해당 역은 존재하지 않는다.") }.name
     }
 
-    private fun getStationOfName(name: String): Station {
+    private fun getStationByName(name: String): Station {
         return stationRepository.findByName(name) ?: throw IllegalArgumentException("해당 역은 존재하지 않는다.")
     }
 }
