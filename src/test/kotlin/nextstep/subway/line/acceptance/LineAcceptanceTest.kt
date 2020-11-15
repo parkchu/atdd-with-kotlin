@@ -37,7 +37,7 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun createLine2() {
         // given
         // 지하철_노선_등록되어_있음
-        지하철_노선_등록되어_있음("신분당선", "bg-red-600", "5")
+        지하철_노선_등록되어_있음("신분당선", "bg-red-600")
 
         // when
         // 지하철_노선_생성_요청
@@ -105,7 +105,7 @@ class LineAcceptanceTest : AcceptanceTest() {
     fun deleteLine() {
         // given
         // 지하철_노선_등록되어_있음
-        val lineResponse = 지하철_노선_등록되어_있음("피카츄선", "bg-red-600", "5")
+        val lineResponse = 지하철_노선_등록되어_있음("피카츄선", "bg-red-600")
 
         // when
         // 지하철_노선_제거_요청

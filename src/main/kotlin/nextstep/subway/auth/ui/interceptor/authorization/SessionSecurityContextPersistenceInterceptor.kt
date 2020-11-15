@@ -8,10 +8,9 @@ import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 class SessionSecurityContextPersistenceInterceptor : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val securityContext = request.session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) as SecurityContext
+        val securityContext = request.session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) as SecurityContext?
         if (securityContext != null) {
             context = securityContext
         }
