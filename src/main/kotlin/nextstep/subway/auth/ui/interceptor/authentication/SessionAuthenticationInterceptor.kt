@@ -35,9 +35,6 @@ class SessionAuthenticationInterceptor(private val userDetailsService: CustomUse
     }
 
     private fun checkAuthentication(userDetails: LoginMember, token: AuthenticationToken) {
-        if (userDetails == null) {
-            throw RuntimeException()
-        }
         if (!userDetails.checkPassword(token.credentials)) {
             throw RuntimeException()
         }
