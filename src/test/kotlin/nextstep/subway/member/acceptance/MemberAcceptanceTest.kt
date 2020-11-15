@@ -68,6 +68,29 @@ class MemberAcceptanceTest : AcceptanceTest() {
     @DisplayName("회원 정보를 관리한다.")
     @Test
     fun manageMember() {
+        // when
+        val response = 회원_생성을_요청(EMAIL, PASSWORD, AGE)
+
+        // then
+        회원_생성됨(response)
+
+        // when
+        val response2 = 회원_정보_조회_요청(response)
+
+        // then
+        회원_정보_조회됨(response2, EMAIL, AGE)
+
+        // when
+        val response3 = 회원_정보_수정_요청(response, "new$EMAIL", "new$PASSWORD", 18)
+
+        // then
+        회원_정보_수정됨(response3)
+
+        // when
+        val response4 = 회원_삭제_요청(response)
+
+        // then
+        회원_삭제됨(response4)
     }
 
     companion object {
