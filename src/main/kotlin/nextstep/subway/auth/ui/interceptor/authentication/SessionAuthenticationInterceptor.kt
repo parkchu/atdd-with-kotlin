@@ -20,14 +20,14 @@ class SessionAuthenticationInterceptor(private val userDetailsService: CustomUse
         return false
     }
 
-    fun convert(request: HttpServletRequest): AuthenticationToken {
+    private fun convert(request: HttpServletRequest): AuthenticationToken {
         val paramMap = request.parameterMap
         val principal = paramMap[USERNAME_FIELD]!![0]
         val credentials = paramMap[PASSWORD_FIELD]!![0]
         return AuthenticationToken(principal, credentials)
     }
 
-    fun authenticate(token: AuthenticationToken): Authentication {
+    private fun authenticate(token: AuthenticationToken): Authentication {
         val principal = token.principal
         val userDetails = userDetailsService.loadUserByUsername(principal)
         checkAuthentication(userDetails, token)
