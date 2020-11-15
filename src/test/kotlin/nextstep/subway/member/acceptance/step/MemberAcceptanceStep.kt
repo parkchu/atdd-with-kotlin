@@ -99,12 +99,12 @@ object MemberAcceptanceStep {
 
     fun 로그인_됨(response: ExtractableResponse<Response>) {
         val tokenResponse: TokenResponse = response.`as`(TokenResponse::class.java)
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
         assertThat(tokenResponse.accessToken).isNotBlank()
     }
 
     fun 회원_생성됨(response: ExtractableResponse<Response>) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
     }
 
     fun 회원_정보_조회됨(response: ExtractableResponse<Response>, email: String?, age: Int) {

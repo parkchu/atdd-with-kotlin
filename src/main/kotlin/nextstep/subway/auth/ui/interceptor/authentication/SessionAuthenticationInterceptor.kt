@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse
 class SessionAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val token = convert(request)
-        val authentication = authenticate(token) ?: throw RuntimeException()
+        val authentication = authenticate(token)
         val httpSession = request.session
         httpSession.setAttribute(SPRING_SECURITY_CONTEXT_KEY, SecurityContext(authentication))
         response.status = HttpServletResponse.SC_OK

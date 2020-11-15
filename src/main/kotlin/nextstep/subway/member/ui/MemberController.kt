@@ -6,6 +6,8 @@ import nextstep.subway.member.dto.MemberResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import javax.servlet.http.HttpServletRequest
+
 
 @RestController
 class MemberController(private val memberService: MemberService) {
@@ -22,7 +24,7 @@ class MemberController(private val memberService: MemberService) {
     }
 
     @GetMapping("/members/me")
-    fun findMemberOfMine(): ResponseEntity<MemberResponse> {
+    fun findMemberOfMine(request: HttpServletRequest): ResponseEntity<MemberResponse> {
         return ResponseEntity.ok().build()
     }
 
