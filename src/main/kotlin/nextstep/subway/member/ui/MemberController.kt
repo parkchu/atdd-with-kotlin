@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui
 
+import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.SecurityContext
 import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
 import nextstep.subway.member.application.MemberService
@@ -44,5 +45,10 @@ class MemberController(private val memberService: MemberService) {
     fun deleteMember(@PathVariable id: Long): ResponseEntity<MemberResponse> {
         memberService.deleteMember(id)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/login/token")
+    fun login(): ResponseEntity<TokenResponse> {
+        return ResponseEntity.ok().build()
     }
 }
