@@ -1,6 +1,8 @@
 package nextstep.subway.auth.domain
 
+import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.JwtTokenProvider
+import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor.Companion.REGEX
 import nextstep.subway.member.application.CustomUserDetailsService
@@ -13,7 +15,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import java.util.*
@@ -38,7 +39,8 @@ class TokenAuthenticationInterceptorTest {
 
         interceptor.preHandle(request, response, Any())
 
-        assertThat(response.status).isEqualTo(HttpStatus.OK.value())
+        val token = request.session!!.getAttribute(SPRING_SECURITY_CONTEXT_KEY) as TokenResponse
+        assertThat(token.accessToken).isEqualTo("jwtToken")
     }
 
     companion object {

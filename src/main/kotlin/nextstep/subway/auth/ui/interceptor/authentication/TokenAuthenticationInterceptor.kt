@@ -14,7 +14,6 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService, private val jwtTokenProvider: JwtTokenProvider) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val credentials = extract(request, AuthorizationType.BASIC)
@@ -23,8 +22,10 @@ class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserD
         val payload: String = ObjectMapper().writeValueAsString(authentication.principal)
         val token = jwtTokenProvider.createToken(payload)
         val tokenResponse = TokenResponse(token)
+        val httpSession = request.session
+        httpSession.setAttribute(TOKEN_KEY, tokenResponse)
         response.status = HttpServletResponse.SC_OK
-        return false
+        return true
     }
 
     private fun convert(credentials: String): AuthenticationToken {
@@ -47,5 +48,6 @@ class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserD
 
     companion object {
         const val REGEX = ":"
+        const val TOKEN_KEY = "token_key"
     }
 }

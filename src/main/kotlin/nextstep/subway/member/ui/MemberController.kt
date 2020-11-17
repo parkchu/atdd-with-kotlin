@@ -3,6 +3,7 @@ package nextstep.subway.member.ui
 import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.SecurityContext
 import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor.Companion.TOKEN_KEY
 import nextstep.subway.member.application.MemberService
 import nextstep.subway.member.domain.LoginMember
 import nextstep.subway.member.dto.MemberRequest
@@ -48,7 +49,8 @@ class MemberController(private val memberService: MemberService) {
     }
 
     @PostMapping("/login/token")
-    fun login(): ResponseEntity<TokenResponse> {
-        return ResponseEntity.ok().build()
+    fun login(request: HttpServletRequest): ResponseEntity<TokenResponse> {
+        val token = request.session.getAttribute(TOKEN_KEY) as TokenResponse
+        return ResponseEntity.ok().body(token)
     }
 }
