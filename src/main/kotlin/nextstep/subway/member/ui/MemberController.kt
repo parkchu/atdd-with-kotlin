@@ -3,6 +3,7 @@ package nextstep.subway.member.ui
 import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.SecurityContext
 import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
+import nextstep.subway.auth.infrastructure.SecurityContextHolder.context
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor.Companion.TOKEN_KEY
 import nextstep.subway.member.application.MemberService
 import nextstep.subway.member.domain.LoginMember
@@ -10,6 +11,7 @@ import nextstep.subway.member.dto.MemberRequest
 import nextstep.subway.member.dto.MemberResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.lang.RuntimeException
 import java.net.URI
 import javax.servlet.http.HttpServletRequest
 
@@ -30,8 +32,9 @@ class MemberController(private val memberService: MemberService) {
 
     @GetMapping("/members/me")
     fun findMemberOfMine(request: HttpServletRequest): ResponseEntity<MemberResponse> {
-        val context = request.session.getAttribute(SPRING_SECURITY_CONTEXT_KEY) as SecurityContext
-        val loginMember = context.authentication!!.principal as LoginMember
+        val context = context
+        val authentication = context.authentication ?: throw RuntimeException("")
+        val loginMember = authentication.principal as LoginMember
         val member = MemberResponse.of(loginMember)
         return ResponseEntity.ok().body(member)
     }

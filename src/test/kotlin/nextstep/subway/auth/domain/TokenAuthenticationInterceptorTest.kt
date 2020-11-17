@@ -25,7 +25,7 @@ class TokenAuthenticationInterceptorTest {
     private lateinit var userDetailsService: CustomUserDetailsService
 
     @Test
-    fun getLoginInformation() {
+    fun getLoginInToken() {
         val jwtTokenProvider: JwtTokenProvider = mock(JwtTokenProvider::class.java)
         `when`(jwtTokenProvider.createToken(anyString())).thenReturn("jwtToken")
         `when`(userDetailsService.loadUserByUsername(EMAIL)).thenReturn(LoginMember(1, EMAIL, PASSWORD, 18))

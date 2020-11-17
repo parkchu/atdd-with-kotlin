@@ -26,15 +26,13 @@ class JwtTokenProvider {
     }
 
     fun getPayload(token: String?): String {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject()
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).body.subject
     }
 
     fun validateToken(token: String?): Boolean {
         return try {
             val claims: Jws<Claims> = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
-            if (claims.getBody().getExpiration().before(Date())) {
-                false
-            } else true
+            !claims.body.expiration.before(Date())
         } catch (e: JwtException) {
             false
         } catch (e: IllegalArgumentException) {
