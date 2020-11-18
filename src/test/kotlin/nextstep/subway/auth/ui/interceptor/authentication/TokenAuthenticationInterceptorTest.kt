@@ -1,10 +1,9 @@
-package nextstep.subway.auth.domain
+package nextstep.subway.auth.ui.interceptor.authentication
 
 import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.JwtTokenProvider
-import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
-import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor
 import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor.Companion.REGEX
+import nextstep.subway.auth.ui.interceptor.authentication.TokenAuthenticationInterceptor.Companion.TOKEN_KEY
 import nextstep.subway.member.application.CustomUserDetailsService
 import nextstep.subway.member.domain.LoginMember
 import org.assertj.core.api.Assertions.assertThat
@@ -39,7 +38,7 @@ class TokenAuthenticationInterceptorTest {
 
         interceptor.preHandle(request, response, Any())
 
-        val token = request.session!!.getAttribute(SPRING_SECURITY_CONTEXT_KEY) as TokenResponse
+        val token = request.session!!.getAttribute(TOKEN_KEY) as TokenResponse
         assertThat(token.accessToken).isEqualTo("jwtToken")
     }
 

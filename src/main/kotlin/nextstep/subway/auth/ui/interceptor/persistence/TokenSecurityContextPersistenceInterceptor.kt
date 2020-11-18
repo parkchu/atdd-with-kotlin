@@ -14,20 +14,31 @@ import javax.servlet.http.HttpServletResponse
 
 class TokenSecurityContextPersistenceInterceptor(private val jwtTokenProvider: JwtTokenProvider) : HandlerInterceptor {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val objectMapper = ObjectMapper()
-        val credentials = extract(request, AuthorizationType.BEARER)
-        jwtTokenProvider.validateToken(credentials)
-        val payload = jwtTokenProvider.getPayload(credentials)
-        try {
-            val hashMap = objectMapper.readValue(payload, HashMap::class.java)
-            val map  = hashMap.map { it.key.toString() to it.value.toString() }.toMap()
-            val loginMember = LoginMember(map["id"]!!.toLong(), map["email"]!!, map["password"]!!, map["age"]!!.toInt())
-            val securityContext = SecurityContext(Authentication(loginMember))
-            context = securityContext
+        if (context.authentication != null) {
+            return true
+        }
 
-        } catch (e: Exception) {
-            return false
+        val credentials = extract(request, AuthorizationType.BEARER)
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return true
+        }
+
+        val securityContext = extractSecurityContext(credentials)
+        if (securityContext != null) {
+            context = securityContext
         }
         return true
+    }
+
+    private fun extractSecurityContext(credentials: String): SecurityContext? {
+        return try {
+            val payload = jwtTokenProvider.getPayload(credentials)
+            val hashMap = ObjectMapper().readValue(payload, HashMap::class.java)
+            val map = hashMap.map { it.key.toString() to it.value.toString() }.toMap()
+            val loginMember = LoginMember(map["id"]!!.toLong(), map["email"]!!, map["password"]!!, map["age"]!!.toInt())
+            SecurityContext(Authentication(loginMember))
+        } catch (e: java.lang.Exception) {
+            null
+        }
     }
 }
