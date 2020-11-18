@@ -99,7 +99,7 @@ object MemberAcceptanceStep {
 
     fun 로그인_됨(response: ExtractableResponse<Response>) {
         val tokenResponse: TokenResponse = response.`as`(TokenResponse::class.java)
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value())
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
         assertThat(tokenResponse.accessToken).isNotBlank()
     }
 
