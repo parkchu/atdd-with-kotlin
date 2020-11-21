@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.interceptor.persistence
+package nextstep.subway.auth.ui.interceptor.authorization
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import nextstep.subway.auth.domain.Authentication
@@ -7,12 +7,12 @@ import nextstep.subway.auth.infrastructure.AuthorizationType
 import nextstep.subway.auth.infrastructure.JwtTokenProvider
 import nextstep.subway.auth.infrastructure.SecurityContext
 import nextstep.subway.auth.infrastructure.SecurityContextHolder.context
+import nextstep.subway.auth.ui.domain.SecurityContextInterceptor
 import nextstep.subway.member.domain.LoginMember
-import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class TokenSecurityContextPersistenceInterceptor(private val jwtTokenProvider: JwtTokenProvider) : HandlerInterceptor {
+class TokenSecurityContextPersistenceInterceptor(private val jwtTokenProvider: JwtTokenProvider) : SecurityContextInterceptor() {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (context.authentication != null) {
             return true

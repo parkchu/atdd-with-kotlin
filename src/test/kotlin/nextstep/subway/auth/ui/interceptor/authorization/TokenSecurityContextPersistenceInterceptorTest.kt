@@ -1,4 +1,4 @@
-package nextstep.subway.auth.ui.interceptor.persistence
+package nextstep.subway.auth.ui.interceptor.authorization
 
 import nextstep.subway.auth.infrastructure.JwtTokenProvider
 import nextstep.subway.auth.infrastructure.SecurityContextHolder

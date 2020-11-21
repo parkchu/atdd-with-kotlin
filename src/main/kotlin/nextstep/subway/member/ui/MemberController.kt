@@ -31,23 +31,20 @@ class MemberController(private val memberService: MemberService) {
     }
 
     @GetMapping("/members/me")
-    fun findMemberOfMine(request: HttpServletRequest): ResponseEntity<MemberResponse> {
-        val context = context
-        val authentication = context.authentication ?: throw RuntimeException("")
-        val loginMember = authentication.principal as LoginMember
+    fun findMemberOfMine(request: HttpServletRequest, loginMember: LoginMember): ResponseEntity<MemberResponse> {
         val member = MemberResponse.of(loginMember)
         return ResponseEntity.ok().body(member)
     }
 
-    @PutMapping("/members/{id}")
-    fun updateMember(@PathVariable id: Long, @RequestBody param: MemberRequest): ResponseEntity<MemberResponse> {
-        memberService.updateMember(id, param)
+    @PutMapping("/members/me")
+    fun updateMember(@RequestBody param: MemberRequest, loginMember: LoginMember): ResponseEntity<MemberResponse> {
+        memberService.updateMember(loginMember.id, param)
         return ResponseEntity.ok().build()
     }
 
-    @DeleteMapping("/members/{id}")
-    fun deleteMember(@PathVariable id: Long): ResponseEntity<MemberResponse> {
-        memberService.deleteMember(id)
+    @DeleteMapping("/members/me")
+    fun deleteMember(loginMember: LoginMember): ResponseEntity<MemberResponse> {
+        memberService.deleteMember(loginMember.id)
         return ResponseEntity.noContent().build()
     }
 
