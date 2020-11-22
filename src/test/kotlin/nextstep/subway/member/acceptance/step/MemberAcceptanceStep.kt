@@ -118,8 +118,11 @@ object MemberAcceptanceStep {
         assertThat(memberResponse.age).isEqualTo(age)
     }
 
-    fun 회원_정보_수정됨(response: ExtractableResponse<Response>) {
+    fun 회원_정보_수정됨(response: ExtractableResponse<Response>, email: String, age: Int) {
+        val memberResponse = response.`as`(MemberResponse::class.java)
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(memberResponse.email).isEqualTo(email)
+        assertThat(memberResponse.age).isEqualTo(age)
     }
 
     fun 회원_삭제됨(response: ExtractableResponse<Response>) {

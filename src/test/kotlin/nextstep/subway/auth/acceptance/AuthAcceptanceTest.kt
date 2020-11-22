@@ -52,7 +52,7 @@ class AuthAcceptanceTest : AcceptanceTest() {
         회원_등록되어_있음(EMAIL, PASSWORD, AGE)
         val tokenResponse: TokenResponse = 로그인_되어_있음(EMAIL, PASSWORD)
         val updateResponse = 회원_정보_수정_요청(tokenResponse, UPDATE_EMAIL, UPDATE_PASSWORD, UPDATE_AGE)
-        회원_정보_수정됨(updateResponse)
+        회원_정보_수정됨(updateResponse, UPDATE_EMAIL, UPDATE_AGE)
     }
 
     @DisplayName("내 정보 삭제")

@@ -11,7 +11,7 @@ data class FavoriteResponse(
         val target: StationResponse
 ) {
     companion object {
-        fun of(favorite: Favorite, source: StationResponse, target: StationResponse): FavoriteResponse? {
+        fun of(favorite: Favorite, source: StationResponse, target: StationResponse): FavoriteResponse {
             return FavoriteResponse(favorite.id, source, target)
         }
     }

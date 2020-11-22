@@ -14,24 +14,26 @@ import org.springframework.stereotype.Service
 class FavoriteService @Autowired constructor(
         private val favoriteRepository: FavoriteRepository, private val stationRepository: StationRepository
 ) {
-    fun createFavorite(request: FavoriteRequest) {
-        val favorite = Favorite(request.source, request.target)
+    fun createFavorite(request: FavoriteRequest, memberId: Long): Long {
+        val favorite = Favorite(request.source, request.target, memberId)
         favoriteRepository.save(favorite)
+        return favorite.id
     }
 
     fun deleteFavorite(id: Long) {
         favoriteRepository.deleteById(id)
     }
 
-    fun findFavorites(): List<FavoriteResponse?> {
-        val favorites = favoriteRepository.findAll()
+    fun findMyFavorites(memberId: Long): List<FavoriteResponse> {
+        val favorites = favoriteRepository.findByMemberId(memberId)
         val stations = extractStations(favorites)
         return favorites.map { it: Favorite ->
-                    FavoriteResponse.of(
-                            it,
-                            StationResponse.of(stations.getValue(it.sourceStationId)),
-                            StationResponse.of(stations.getValue(it.sourceStationId)))
-                }
+            FavoriteResponse.of(
+                    it,
+                    StationResponse.of(stations.getValue(it.sourceStationId)),
+                    StationResponse.of(stations.getValue(it.targetStationId)))
+        }
+
     }
 
     private fun extractStations(favorites: List<Favorite>): Map<Long, Station> {

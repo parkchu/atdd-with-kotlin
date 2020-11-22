@@ -12,6 +12,8 @@ class Favorite(
 
         val targetStationId: Long,
 
+        val memberId: Long,
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0

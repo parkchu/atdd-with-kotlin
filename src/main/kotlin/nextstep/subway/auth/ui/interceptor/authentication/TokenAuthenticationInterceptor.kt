@@ -11,7 +11,6 @@ import nextstep.subway.auth.ui.domain.AuthenticationConverter
 import nextstep.subway.member.application.CustomUserDetailsService
 import nextstep.subway.member.domain.LoginMember
 import org.springframework.web.servlet.HandlerInterceptor
-import java.lang.Exception
 import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse

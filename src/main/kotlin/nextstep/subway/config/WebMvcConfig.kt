@@ -21,6 +21,8 @@ class WebMvcConfig(private val userDetailsService: CustomUserDetailsService, pri
         registry.addInterceptor(SessionSecurityContextPersistenceInterceptor())
         registry.addInterceptor(TokenAuthenticationInterceptor(userDetailsService, jwtTokenProvider)).addPathPatterns("/login/token")
         registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/members/me")
+        registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/favorites")
+        registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/favorites/*")
     }
 
     @Autowired
