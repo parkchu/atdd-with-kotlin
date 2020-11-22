@@ -10,6 +10,10 @@ import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되
 import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_됨
 import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_요청
 import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_삭제_요청
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_삭제됨
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_수정_요청
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_수정됨
 import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_조회됨
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -42,9 +46,30 @@ class AuthAcceptanceTest : AcceptanceTest() {
         회원_정보_조회됨(response, EMAIL, AGE)
     }
 
+    @DisplayName("내 정보 수정")
+    @Test
+    fun updateMyInformation() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE)
+        val tokenResponse: TokenResponse = 로그인_되어_있음(EMAIL, PASSWORD)
+        val updateResponse = 회원_정보_수정_요청(tokenResponse, UPDATE_EMAIL, UPDATE_PASSWORD, UPDATE_AGE)
+        회원_정보_수정됨(updateResponse, UPDATE_EMAIL, UPDATE_AGE)
+    }
+
+    @DisplayName("내 정보 삭제")
+    @Test
+    fun deleteMyInformation() {
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE)
+        val tokenResponse: TokenResponse = 로그인_되어_있음(EMAIL, PASSWORD)
+        val deleteResponse = 회원_삭제_요청(tokenResponse)
+        회원_삭제됨(deleteResponse)
+    }
+
     companion object {
         private const val EMAIL = "email@email.com"
         private const val PASSWORD = "password"
         private const val AGE = 20
+        private const val UPDATE_EMAIL = "update@email.com"
+        private const val UPDATE_PASSWORD = "update_password"
+        private const val UPDATE_AGE = 18
     }
 }

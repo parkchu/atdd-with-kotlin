@@ -3,6 +3,7 @@ package nextstep.subway.favorite.ui
 import nextstep.subway.favorite.application.FavoriteService
 import nextstep.subway.favorite.dto.FavoriteRequest
 import nextstep.subway.favorite.dto.FavoriteResponse
+import nextstep.subway.member.domain.LoginMember
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,23 +14,22 @@ class FavoriteController @Autowired constructor(
         private val favoriteService: FavoriteService
 ) {
     @PostMapping("/favorites")
-    fun createFavorite(@RequestBody request: FavoriteRequest?): ResponseEntity<*> {
-        favoriteService.createFavorite(request!!)
+    fun createFavorite2(@RequestBody request: FavoriteRequest?, loginMember: LoginMember): ResponseEntity<*> {
+        val favoriteId = favoriteService.createFavorite(request!!, loginMember.id)
         return ResponseEntity
-                .created(URI.create("/favorites/" + 1L))
+                .created(URI.create("/favorites/$favoriteId"))
                 .build<Any>()
     }
 
-    @get:GetMapping("/favorites")
-    val favorites: ResponseEntity<List<FavoriteResponse?>>
-        get() {
-            val favorites = favoriteService.findFavorites()
-            return ResponseEntity.ok().body(favorites)
-        }
+    @GetMapping("/favorites")
+    fun findMyFavorites(loginMember: LoginMember): ResponseEntity<List<FavoriteResponse>> {
+        val favorites = favoriteService.findMyFavorites(loginMember.id)
+        return ResponseEntity.ok().body(favorites)
+    }
 
     @DeleteMapping("/favorites/{id}")
-    fun deleteFavorite(@PathVariable id: Long?): ResponseEntity<*> {
-        favoriteService.deleteFavorite(id!!)
+    fun deleteFavorite(@PathVariable id: Long, loginMember: LoginMember): ResponseEntity<*> {
+        favoriteService.deleteFavorite(id)
         return ResponseEntity.noContent().build<Any>()
     }
 }

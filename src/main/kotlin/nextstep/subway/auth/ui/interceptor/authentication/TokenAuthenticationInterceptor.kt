@@ -7,6 +7,7 @@ import nextstep.subway.auth.dto.TokenResponse
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor.extract
 import nextstep.subway.auth.infrastructure.AuthorizationType
 import nextstep.subway.auth.infrastructure.JwtTokenProvider
+import nextstep.subway.auth.ui.domain.AuthenticationConverter
 import nextstep.subway.member.application.CustomUserDetailsService
 import nextstep.subway.member.domain.LoginMember
 import org.springframework.web.servlet.HandlerInterceptor
@@ -14,10 +15,9 @@ import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService, private val jwtTokenProvider: JwtTokenProvider) : HandlerInterceptor {
+class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService, private val jwtTokenProvider: JwtTokenProvider) : HandlerInterceptor, AuthenticationConverter {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-        val credentials = extract(request, AuthorizationType.BASIC)
-        val authenticationToken = convert(credentials)
+        val authenticationToken = convert(request)
         val authentication = authenticate(authenticationToken)
         val payload: String = ObjectMapper().writeValueAsString(authentication.principal)
         val token = jwtTokenProvider.createToken(payload)
@@ -28,7 +28,8 @@ class TokenAuthenticationInterceptor(private val userDetailsService: CustomUserD
         return true
     }
 
-    private fun convert(credentials: String): AuthenticationToken {
+    override fun convert(request: HttpServletRequest): AuthenticationToken {
+        val credentials = extract(request, AuthorizationType.BASIC)
         val list = String(Base64.getDecoder().decode(credentials)).split(REGEX)
         return AuthenticationToken(list[0], list[1])
     }

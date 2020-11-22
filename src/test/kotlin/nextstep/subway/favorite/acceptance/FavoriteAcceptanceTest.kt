@@ -3,9 +3,16 @@ package nextstep.subway.favorite.acceptance
 import io.restassured.response.ExtractableResponse
 import io.restassured.response.Response
 import nextstep.subway.AcceptanceTest
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_목록_조회_요청
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_목록_조회됨
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_삭제_요청
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_삭제됨
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_생성됨
+import nextstep.subway.favorite.acceptance.step.FavoriteAcceptanceStep.즐겨찾기_생성을_요청
 import nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음
 import nextstep.subway.line.acceptance.LineStationAcceptanceStep.지하철_노선에_지하철역_등록되어_있음
 import nextstep.subway.line.dto.LineResponse
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되어_있음
 import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음
 import nextstep.subway.station.acceptance.StationAcceptanceStep.지하철역_등록되어_있음
 import nextstep.subway.station.dto.StationResponse
@@ -23,8 +30,7 @@ class FavoriteAcceptanceTest : AcceptanceTest() {
      * 양재역      -       -|
      */
     @BeforeEach
-    override fun setUp() {
-        super.setUp()
+    fun backGround() {
         val createdStationResponse1: ExtractableResponse<Response> = 지하철역_등록되어_있음("교대역")
         val createdStationResponse2: ExtractableResponse<Response> = 지하철역_등록되어_있음("강남역")
         val createdStationResponse3: ExtractableResponse<Response> = 지하철역_등록되어_있음("양재역")
@@ -47,14 +53,34 @@ class FavoriteAcceptanceTest : AcceptanceTest() {
         지하철_노선에_지하철역_등록되어_있음(lineId3, stationId1, stationId4, 1, 2)
         지하철_노선에_지하철역_등록되어_있음(lineId3, stationId4, stationId3, 2, 2)
         회원_등록되어_있음(EMAIL, PASSWORD, 20)
-
-        // 로그인_되어있음
     }
 
-    @DisplayName("즐겨찾기를 관리한다.")
+    @DisplayName("회원 별 즐겨찾기 관리")
     @Test
     fun manageMember() {
+        // backGround
+        val token = 로그인_되어_있음(EMAIL, PASSWORD)
+
+        // When
+        val response = 즐겨찾기_생성을_요청(1, 2, token)
+
+        // Then
+        즐겨찾기_생성됨(response)
+
+        // When
+        val response2 = 즐겨찾기_목록_조회_요청(token)
+
+        // Then
+        즐겨찾기_목록_조회됨(response2)
+
+        // When
+        val response3 = 즐겨찾기_삭제_요청(response, token)
+
+        // Then
+        즐겨찾기_삭제됨(response3)
+
     }
+
 
     companion object {
         const val EMAIL = "email@email.com"

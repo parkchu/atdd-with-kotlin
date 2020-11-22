@@ -4,13 +4,14 @@ import nextstep.subway.auth.domain.Authentication
 import nextstep.subway.auth.domain.AuthenticationToken
 import nextstep.subway.auth.infrastructure.SecurityContext
 import nextstep.subway.auth.infrastructure.SecurityContextHolder.SPRING_SECURITY_CONTEXT_KEY
+import nextstep.subway.auth.ui.domain.AuthenticationConverter
 import nextstep.subway.member.application.CustomUserDetailsService
 import nextstep.subway.member.domain.LoginMember
 import org.springframework.web.servlet.HandlerInterceptor
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class SessionAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService) : HandlerInterceptor {
+class SessionAuthenticationInterceptor(private val userDetailsService: CustomUserDetailsService) : HandlerInterceptor, AuthenticationConverter {
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val token = convert(request)
         val authentication = authenticate(token)
@@ -20,7 +21,7 @@ class SessionAuthenticationInterceptor(private val userDetailsService: CustomUse
         return false
     }
 
-    private fun convert(request: HttpServletRequest): AuthenticationToken {
+    override fun convert(request: HttpServletRequest): AuthenticationToken {
         val paramMap = request.parameterMap
         val principal = paramMap[USERNAME_FIELD]!![0]
         val credentials = paramMap[PASSWORD_FIELD]!![0]

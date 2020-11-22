@@ -5,8 +5,9 @@ import io.restassured.authentication.FormAuthConfig
 import io.restassured.response.ExtractableResponse
 import io.restassured.response.Response
 import nextstep.subway.auth.dto.TokenResponse
+import nextstep.subway.member.acceptance.MemberAcceptanceTest.Companion.EMAIL
+import nextstep.subway.member.acceptance.MemberAcceptanceTest.Companion.PASSWORD
 import nextstep.subway.member.dto.MemberResponse
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -56,23 +57,26 @@ object MemberAcceptanceStep {
                 .then().log().all().extract()
     }
 
-    fun 회원_정보_수정_요청(response: ExtractableResponse<Response>, email: String, password: String, age: Int): ExtractableResponse<Response> {
-        val uri = response.header("Location")
+    fun 회원_정보_수정_요청(token: TokenResponse, email: String, password: String, age: Int): ExtractableResponse<Response> {
+        val uri = "/members/me"
         val params: MutableMap<String, String> = HashMap()
         params["email"] = email
         params["password"] = password
         params["age"] = age.toString() + ""
-        return RestAssured.given().log().all()
+        return RestAssured.given().log().all().auth()
+                .oauth2(token.accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params).
-                `when`()
+                .body(params)
+                .`when`()
                 .put(uri)
-                .then().log().all().extract()
+                .then().log().all()
+                .extract()
     }
 
-    fun 회원_삭제_요청(response: ExtractableResponse<Response>): ExtractableResponse<Response> {
-        val uri = response.header("Location")
-        return RestAssured.given().log().all()
+    fun 회원_삭제_요청(token: TokenResponse): ExtractableResponse<Response> {
+        val uri = "/members/me"
+        return RestAssured.given().log().all().auth()
+                .oauth2(token.accessToken)
                 .`when`()
                 .delete(uri)
                 .then().log().all().extract()
@@ -114,8 +118,11 @@ object MemberAcceptanceStep {
         assertThat(memberResponse.age).isEqualTo(age)
     }
 
-    fun 회원_정보_수정됨(response: ExtractableResponse<Response>) {
+    fun 회원_정보_수정됨(response: ExtractableResponse<Response>, email: String, age: Int) {
+        val memberResponse = response.`as`(MemberResponse::class.java)
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(memberResponse.email).isEqualTo(email)
+        assertThat(memberResponse.age).isEqualTo(age)
     }
 
     fun 회원_삭제됨(response: ExtractableResponse<Response>) {
