@@ -23,10 +23,12 @@ class PathService @Autowired constructor(
         paths.setStartPoint(getStationName(stationIds.first()))
         paths.setArrivalPoint(getStationName(stationIds.last()))
         val path = pathApp.getShortestPath(paths)
-        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() })
+        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() }).get(type)
+        val totalPrice = TotalPrice.get(totalValue[0])
         return PathResponse.of(
                 (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
-                totalValue.get(type)
+                totalValue,
+                totalPrice
         )
     }
 

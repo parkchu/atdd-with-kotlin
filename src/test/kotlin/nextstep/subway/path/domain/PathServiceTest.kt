@@ -54,6 +54,7 @@ class PathServiceTest {
         assertThat(path.stations).hasSize(3)
         assertThat(path.distance).isEqualTo(20)
         assertThat(path.duration).isEqualTo(20)
+        assertThat(path.fare).isEqualTo(1450)
     }
 
     @DisplayName("2개의 경로중 최단 경로 구하기")
