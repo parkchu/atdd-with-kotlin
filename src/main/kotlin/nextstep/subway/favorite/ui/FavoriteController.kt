@@ -14,8 +14,8 @@ class FavoriteController @Autowired constructor(
         private val favoriteService: FavoriteService
 ) {
     @PostMapping("/favorites")
-    fun createFavorite2(@RequestBody request: FavoriteRequest?, loginMember: LoginMember): ResponseEntity<*> {
-        val favoriteId = favoriteService.createFavorite(request!!, loginMember.id)
+    fun createFavorite(@RequestBody request: FavoriteRequest, loginMember: LoginMember): ResponseEntity<*> {
+        val favoriteId = favoriteService.createFavorite(request, loginMember.id)
         return ResponseEntity
                 .created(URI.create("/favorites/$favoriteId"))
                 .build<Any>()
