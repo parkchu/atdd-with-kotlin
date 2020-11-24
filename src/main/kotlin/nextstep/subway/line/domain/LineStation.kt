@@ -14,19 +14,24 @@ class LineStation(
 
         var duration: Int,
 
+        var extraFare: Int = 0,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
 ) {
-        fun isSame(lineStation: LineStation): Boolean {
-                return this.stationId == lineStation.stationId
-        }
+    fun isSame(lineStation: LineStation): Boolean {
+        return this.stationId == lineStation.stationId
+    }
 
-        fun updatePreStationTo(id: Long?) {
-                preStationId = id
-        }
+    fun updatePreStationTo(id: Long?) {
+        preStationId = id
+    }
 
-        fun checkConnect(stationId: Long, stationId2: Long): Boolean {
-                return (this.stationId == stationId && this.preStationId == stationId2) || (this.stationId == stationId2 && this.preStationId == stationId)
-        }
+    fun checkConnect(stationId: Long, stationId2: Long): Boolean {
+        return (this.stationId == stationId && this.preStationId == stationId2) || (this.stationId == stationId2 && this.preStationId == stationId)
+    }
+
+    fun updateFare(fare: Int) {
+        extraFare = fare
+    }
 }

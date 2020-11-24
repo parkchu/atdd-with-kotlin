@@ -40,7 +40,9 @@ class LineService @Autowired constructor(
 
     fun updateLine(id: Long, lineUpdateRequest: LineRequest) {
         val persistLine = findById(id)
-        persistLine.update(lineUpdateRequest.toLine())
+        val line = lineUpdateRequest.toLine()
+        persistLine.updateFareOfLineStations(line.extraFare)
+        persistLine.update(line)
     }
 
     fun deleteLineById(id: Long) {
@@ -50,7 +52,7 @@ class LineService @Autowired constructor(
     fun addStation(lineId: Long, lineStationRequest: LineStationRequest) {
         stationRepository.findById(lineStationRequest.stationId).orElseThrow { DataIntegrityViolationException("") }
         val line = findById(lineId)
-        line.addStation(lineStationRequest.toLineStation())
+        line.addStation(lineStationRequest.toLineStation(line.extraFare))
     }
 
     fun deleteStation(lineId: Long, stationId: Long) {

@@ -51,4 +51,8 @@ class LineStations {
         _lineStations.find { it.preStationId == stationId }?.updatePreStationTo(deleteLineStation.preStationId)
         _lineStations.removeIf { it.stationId == stationId }
     }
+
+    fun updateFare(fare: Int) {
+        _lineStations.forEach { it.updateFare(fare) }
+    }
 }

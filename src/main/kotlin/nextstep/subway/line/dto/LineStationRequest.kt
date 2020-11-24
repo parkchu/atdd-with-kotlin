@@ -8,7 +8,7 @@ data class LineStationRequest (
         val distance: Int,
         val duration: Int
 ) {
-    fun toLineStation(): LineStation {
-        return LineStation(stationId, preStationId, distance, duration)
+    fun toLineStation(extraFare: Int = 0): LineStation {
+        return LineStation(stationId, preStationId, distance, duration, extraFare)
     }
 }
