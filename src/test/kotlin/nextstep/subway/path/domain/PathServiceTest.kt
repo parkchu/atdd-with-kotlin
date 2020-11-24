@@ -29,8 +29,8 @@ class PathServiceTest {
     @DisplayName("경로 구하기")
     @Test
     fun findPath() {
-        val lineStation2 = LineStation(2, 1, 10, 10)
-        val lineStation3 = LineStation(3, 2, 10, 10)
+        val lineStation2 = LineStation(2, 1, 10, 10, 100)
+        val lineStation3 = LineStation(3, 2, 10, 10, 300)
         val lineStations = listOf(lineStation2, lineStation3)
         `when`(lineStationRepository.findAll()).thenReturn(lineStations)
         val station1 = Station("출발역", id = 1)
@@ -54,7 +54,7 @@ class PathServiceTest {
         assertThat(path.stations).hasSize(3)
         assertThat(path.distance).isEqualTo(20)
         assertThat(path.duration).isEqualTo(20)
-        assertThat(path.fare).isEqualTo(1450)
+        assertThat(path.fare).isEqualTo(1750)
     }
 
     @DisplayName("2개의 경로중 최단 경로 구하기")
