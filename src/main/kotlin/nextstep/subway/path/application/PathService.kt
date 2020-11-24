@@ -18,14 +18,14 @@ class PathService @Autowired constructor(
     val pathApp = PathApp()
     val paths = Paths()
 
-    fun findShortest(stationIds: List<Long>, type: String): PathResponse {
+    fun findShortest(stationIds: List<Long>, type: String, age: Int = 20): PathResponse {
         init(type)
         paths.setStartPoint(getStationName(stationIds.first()))
         paths.setArrivalPoint(getStationName(stationIds.last()))
         val path = pathApp.getShortestPath(paths)
         val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() }).get(type)
         val extraFare = totalValue[1]
-        val totalPrice = (TotalPrice.get(totalValue.first()) + extraFare)
+        val totalPrice = TotalPrice.get(totalValue.first(), extraFare, age)
         return PathResponse.of(
                 (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
                 totalValue,

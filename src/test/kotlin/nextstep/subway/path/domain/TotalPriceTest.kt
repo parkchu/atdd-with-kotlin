@@ -30,4 +30,24 @@ class TotalPriceTest {
 
         assertThat(price).isEqualTo(2150)
     }
+
+    @Test
+    fun getTotalPriceAge6() {
+        val distance = 5
+        val age = 6
+
+        val price = TotalPrice.get(distance, age = age)
+
+        assertThat(price).isEqualTo(800)
+    }
+
+    @Test
+    fun getTotalPriceAge18() {
+        val distance = 5
+        val age = 18
+
+        val price = TotalPrice.get(distance, age = age)
+
+        assertThat(price).isEqualTo(1070)
+    }
 }

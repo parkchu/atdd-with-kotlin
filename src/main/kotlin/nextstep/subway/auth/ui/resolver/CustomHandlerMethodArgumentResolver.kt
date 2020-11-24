@@ -18,8 +18,8 @@ class CustomHandlerMethodArgumentResolver : HandlerMethodArgumentResolver {
     }
 
     @Throws(Exception::class)
-    override fun resolveArgument(methodParameter: MethodParameter, modelAndViewContainer: ModelAndViewContainer?, nativeWebRequest: NativeWebRequest, webDataBinderFactory: WebDataBinderFactory?): Any {
-        val authentication = context.authentication ?: throw RuntimeException("")
+    override fun resolveArgument(methodParameter: MethodParameter, modelAndViewContainer: ModelAndViewContainer?, nativeWebRequest: NativeWebRequest, webDataBinderFactory: WebDataBinderFactory?): Any? {
+        val authentication = context.authentication ?: return LoginMember(-1, "", "", 20)
         return authentication.principal as LoginMember
     }
 }
