@@ -36,6 +36,7 @@ class Line(
         this.endTime = updateLine.endTime
         this.intervalTime = updateLine.intervalTime
         this.extraFare = updateLine.extraFare
+        this.lineStations.updateFare(updateLine.extraFare)
     }
 
     fun getLineStationResponse(stations: List<Station>): List<LineStationResponse> {
@@ -48,9 +49,5 @@ class Line(
 
     fun deleteStation(stationId: Long) {
         lineStations.delete(stationId)
-    }
-
-    fun updateFareOfLineStations(fare: Int) {
-        lineStations.updateFare(fare)
     }
 }

@@ -10,7 +10,7 @@ class TotalPriceTest {
 
         val price = TotalPrice.get(distance)
 
-        assertThat(price).isEqualTo(1250)
+        assertThat(price).isEqualTo(1_250)
     }
 
     @Test
@@ -19,7 +19,7 @@ class TotalPriceTest {
 
         val price = TotalPrice.get(distance)
 
-        assertThat(price).isEqualTo(1350)
+        assertThat(price).isEqualTo(1_350)
     }
 
     @Test
@@ -28,7 +28,7 @@ class TotalPriceTest {
 
         val price = TotalPrice.get(distance)
 
-        assertThat(price).isEqualTo(2150)
+        assertThat(price).isEqualTo(2_150)
     }
 
     @Test
@@ -48,6 +48,6 @@ class TotalPriceTest {
 
         val price = TotalPrice.get(distance, age = age)
 
-        assertThat(price).isEqualTo(1070)
+        assertThat(price).isEqualTo(1_070)
     }
 }

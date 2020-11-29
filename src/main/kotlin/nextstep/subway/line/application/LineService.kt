@@ -41,7 +41,6 @@ class LineService @Autowired constructor(
     fun updateLine(id: Long, lineUpdateRequest: LineRequest) {
         val persistLine = findById(id)
         val line = lineUpdateRequest.toLine()
-        persistLine.updateFareOfLineStations(line.extraFare)
         persistLine.update(line)
     }
 

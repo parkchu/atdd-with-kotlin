@@ -47,7 +47,7 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(pathResponse.distance).isEqualTo(40)
         assertThat(pathResponse.duration).isEqualTo(40)
         assertThat(pathResponse.stations).hasSize(5)
-        assertThat(pathResponse.fare).isEqualTo(2350)
+        assertThat(pathResponse.fare).isEqualTo(2_350)
     }
 
     @DisplayName("두 역의 최단 시간 경로를 조회")
@@ -115,6 +115,6 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(pathResponse.distance).isEqualTo(40)
         assertThat(pathResponse.duration).isEqualTo(40)
         assertThat(pathResponse.stations).hasSize(5)
-        assertThat(pathResponse.fare).isEqualTo(1350)
+        assertThat(pathResponse.fare).isEqualTo(1_350)
     }
 }
