@@ -18,7 +18,7 @@ class Paths {
         val smallMap = mutableMapOf<String, Path>()
         smallMap[name] = Path(listOf(name), 0, 0)
         _paths[name] = smallMap
-        _paths.forEach { loopPaths2(it) }
+        _paths.forEach { loopPaths(it) }
     }
 
     private fun checkContainsPoint(name: String) {
@@ -27,7 +27,7 @@ class Paths {
         }
     }
 
-    private fun loopPaths2(path: Map.Entry<String, MutableMap<String, Path>>) {
+    private fun loopPaths(path: Map.Entry<String, MutableMap<String, Path>>) {
         _paths.forEach { setPath(!path.value.contains(it.key), listOf(path, it)) }
     }
 
@@ -60,8 +60,10 @@ class Paths {
     private fun updatePath(path: Path?, totalValue: List<Int>) {
         val mainValue = totalValue.first()
         val subValue = totalValue.last()
+        val extraFare = totalValue[1]
         path!!.updateMain(mainValue)
         path.updateSub(subValue)
+        path.updateExtraFare(extraFare)
     }
 
     fun getPaths(): Map<String, Map<String, Path>> = _paths.toMap()

@@ -21,7 +21,8 @@ object LineAcceptanceStep {
             startTime: LocalTime = LocalTime.of(5, 30),
             endTime: LocalTime = LocalTime.of(23, 30),
             intervalTime: String,
-            uri: String? = null
+            uri: String? = null,
+            extraFare: Int = 0
     ): ExtractableResponse<Response> {
         val params: MutableMap<String, String> = HashMap()
         params["name"] = name
@@ -29,6 +30,7 @@ object LineAcceptanceStep {
         params["startTime"] = startTime.format(DateTimeFormatter.ISO_TIME)
         params["endTime"] = endTime.format(DateTimeFormatter.ISO_TIME)
         params["intervalTime"] = intervalTime
+        params["extraFare"] = extraFare.toString()
         val requestSpecification = RestAssured
                 .given()
                 .log().all()
@@ -43,8 +45,8 @@ object LineAcceptanceStep {
                 .log().all().extract()
     }
 
-    fun 등록한_노선정보_요청(name: String, color: String, intervalTime: String): LineResponse {
-        return 노선_생성_요청(name = name, color = color, intervalTime = intervalTime).body().`as`(LineResponse::class.java)
+    fun 등록한_노선정보_요청(name: String, color: String, intervalTime: String, extraFare: Int = 0): LineResponse {
+        return 노선_생성_요청(name = name, color = color, intervalTime = intervalTime, extraFare = extraFare).body().`as`(LineResponse::class.java)
     }
 
     fun 노선_수정_요청(

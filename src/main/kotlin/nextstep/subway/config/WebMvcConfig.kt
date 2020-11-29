@@ -23,6 +23,7 @@ class WebMvcConfig(private val userDetailsService: CustomUserDetailsService, pri
         registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/members/me")
         registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/favorites")
         registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/favorites/*")
+        registry.addInterceptor(TokenSecurityContextPersistenceInterceptor(jwtTokenProvider)).addPathPatterns("/paths/*")
     }
 
     @Autowired

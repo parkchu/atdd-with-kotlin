@@ -8,9 +8,10 @@ data class LineRequest(
         val color: String,
         val startTime: LocalTime,
         val endTime: LocalTime,
-        val intervalTime: Int
+        val intervalTime: Int,
+        val extraFare: Int
 ) {
     fun toLine(): Line {
-        return Line(name, color, startTime, endTime, intervalTime)
+        return Line(name, color, startTime, endTime, intervalTime, extraFare)
     }
 }

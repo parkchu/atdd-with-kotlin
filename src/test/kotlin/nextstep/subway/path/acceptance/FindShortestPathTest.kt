@@ -2,8 +2,11 @@ package nextstep.subway.path.acceptance
 
 import io.restassured.RestAssured
 import nextstep.subway.AcceptanceTest
+import nextstep.subway.favorite.acceptance.FavoriteAcceptanceTest
 import nextstep.subway.line.acceptance.LineAcceptanceStep.등록한_노선정보_요청
 import nextstep.subway.line.acceptance.LineAddStationStep.노선에_역_등록되어_있음
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.로그인_되어_있음
+import nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음
 import nextstep.subway.path.dto.PathResponse
 import nextstep.subway.station.acceptance.StationAcceptanceStep.등록한_지하철역정보_요청
 import org.assertj.core.api.Assertions.assertThat
@@ -24,7 +27,7 @@ class FindShortestPathTest : AcceptanceTest() {
         val station3 = 등록한_지하철역정보_요청("재성역")
         val station4 = 등록한_지하철역정보_요청("영정역")
         val station5 = 등록한_지하철역정보_요청("예은역")
-        val line = 등록한_노선정보_요청("1호선", "bg-red-600", "5")
+        val line = 등록한_노선정보_요청("1호선", "bg-red-600", "5", 500)
         노선에_역_등록되어_있음(station1.id, line.id)
         노선에_역_등록되어_있음(station2.id, line.id)
         노선에_역_등록되어_있음(station3.id, line.id)
@@ -39,10 +42,12 @@ class FindShortestPathTest : AcceptanceTest() {
                 .then().log().all().extract()
 
         // Then
+        val pathResponse = response.`as`(PathResponse::class.java)
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-        assertThat(response.`as`(PathResponse::class.java).distance).isEqualTo(40)
-        assertThat(response.`as`(PathResponse::class.java).duration).isEqualTo(40)
-        assertThat(response.`as`(PathResponse::class.java).stations).hasSize(5)
+        assertThat(pathResponse.distance).isEqualTo(40)
+        assertThat(pathResponse.duration).isEqualTo(40)
+        assertThat(pathResponse.stations).hasSize(5)
+        assertThat(pathResponse.fare).isEqualTo(2_350)
     }
 
     @DisplayName("두 역의 최단 시간 경로를 조회")
@@ -73,5 +78,43 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(response.`as`(PathResponse::class.java).distance).isEqualTo(40)
         assertThat(response.`as`(PathResponse::class.java).duration).isEqualTo(40)
         assertThat(response.`as`(PathResponse::class.java).stations).hasSize(5)
+    }
+
+    @DisplayName("경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용")
+    @Test
+    fun findShortestPath3() {
+        // Given
+        val station1 = 등록한_지하철역정보_요청("카츄역")
+        val station2 = 등록한_지하철역정보_요청("주한역")
+        val station3 = 등록한_지하철역정보_요청("재성역")
+        val station4 = 등록한_지하철역정보_요청("영정역")
+        val station5 = 등록한_지하철역정보_요청("예은역")
+        val line = 등록한_노선정보_요청("1호선", "bg-red-600", "5", 500)
+        val line2 = 등록한_노선정보_요청("2호선", "bg-red-600", "5", 300)
+        노선에_역_등록되어_있음(station1.id, line.id)
+        노선에_역_등록되어_있음(station2.id, line.id)
+        노선에_역_등록되어_있음(station3.id, line.id)
+        노선에_역_등록되어_있음(station3.id, line2.id)
+        노선에_역_등록되어_있음(station4.id, line2.id)
+        노선에_역_등록되어_있음(station5.id, line2.id)
+        회원_등록되어_있음(FavoriteAcceptanceTest.EMAIL, FavoriteAcceptanceTest.PASSWORD, 6)
+        val token = 로그인_되어_있음(FavoriteAcceptanceTest.EMAIL, FavoriteAcceptanceTest.PASSWORD)
+
+        // When
+        val response = RestAssured
+                .given().log().all()
+                .auth()
+                .oauth2(token.accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .`when`()["/paths/?source=${station1.id}&target=${station5.id}&type=DISTANCE"]
+                .then().log().all().extract()
+
+        // Then
+        val pathResponse = response.`as`(PathResponse::class.java)
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(pathResponse.distance).isEqualTo(40)
+        assertThat(pathResponse.duration).isEqualTo(40)
+        assertThat(pathResponse.stations).hasSize(5)
+        assertThat(pathResponse.fare).isEqualTo(1_350)
     }
 }

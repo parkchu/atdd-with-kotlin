@@ -20,6 +20,8 @@ class Line(
 
         var intervalTime: Int,
 
+        var extraFare: Int = 0,
+
         @Embedded
         var lineStations: LineStations = LineStations(),
 
@@ -33,6 +35,8 @@ class Line(
         this.startTime = updateLine.startTime
         this.endTime = updateLine.endTime
         this.intervalTime = updateLine.intervalTime
+        this.extraFare = updateLine.extraFare
+        this.lineStations.updateFare(updateLine.extraFare)
     }
 
     fun getLineStationResponse(stations: List<Station>): List<LineStationResponse> {

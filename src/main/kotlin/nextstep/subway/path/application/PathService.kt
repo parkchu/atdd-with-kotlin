@@ -23,11 +23,20 @@ class PathService @Autowired constructor(
         paths.setStartPoint(getStationName(stationIds.first()))
         paths.setArrivalPoint(getStationName(stationIds.last()))
         val path = pathApp.getShortestPath(paths)
-        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() })
+        val totalValue = TotalValue((path["총"] ?: error("")).map { it.toInt() }).get(type)
+        val extraFare = totalValue[1]
         return PathResponse.of(
                 (path["경로"] ?: error("")).map { PathStationResponse.of(getStationByName(it)) },
-                totalValue.get(type)
+                totalValue,
+                extraFare
         )
+    }
+
+    fun updatePriceToResponse(response: PathResponse, age: Int) {
+        val distance = response.distance
+        val extraFare = response.fare
+        val totalPrice = TotalPrice.get(distance, extraFare, age)
+        response.updateFare(totalPrice)
     }
 
     private fun init(type: String) {
@@ -46,7 +55,7 @@ class PathService @Autowired constructor(
 
     private fun pathsSetBetweenValue(lineStation: LineStation?, stations: List<Station>, type: String) {
         if (lineStation != null) {
-            val totalValue = TotalValue(listOf(lineStation.distance, lineStation.duration))
+            val totalValue = TotalValue(listOf(lineStation.distance, lineStation.extraFare, lineStation.duration))
             paths.setBetweenValue(stations.first().name, stations.last().name, totalValue.get(type))
         }
     }
