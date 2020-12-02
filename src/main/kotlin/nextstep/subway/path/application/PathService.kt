@@ -32,13 +32,6 @@ class PathService @Autowired constructor(
         )
     }
 
-    fun updatePriceToResponse(response: PathResponse, age: Int) {
-        val distance = response.distance
-        val extraFare = response.fare
-        val totalPrice = TotalPrice.get(distance, extraFare, age)
-        response.updateFare(totalPrice)
-    }
-
     private fun init(type: String) {
         paths.clearPaths()
         val stations = PathStations(stationRepository.findAll())

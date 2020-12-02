@@ -52,7 +52,7 @@ class LineStations {
         _lineStations.removeIf { it.stationId == stationId }
     }
 
-    fun updateFare(fare: Int) {
-        _lineStations.forEach { it.updateFare(fare) }
+    fun update(line: Line) {
+        _lineStations.forEach { it.update(line) }
     }
 }

@@ -213,7 +213,7 @@ class PathServiceTest {
         val pathService = PathService(lineStationRepository, stationRepository)
         val path = pathService.findShortest(listOf(station1.id, station3.id), "DURATION")
 
-        pathService.updatePriceToResponse(path, 20)
+        path.updateFareWithAge(20)
 
         assertThat(path.fare).isEqualTo(1_650)
     }

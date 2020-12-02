@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain
 
+import java.time.LocalTime
 import javax.persistence.*
 
 @Entity
@@ -15,6 +16,12 @@ class LineStation(
         var duration: Int,
 
         var extraFare: Int = 0,
+
+        var startTime: LocalTime = LocalTime.of(9, 0),
+
+        var endTime: LocalTime = LocalTime.of(18, 0),
+
+        var intervalTime: Int = 0,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
@@ -31,7 +38,10 @@ class LineStation(
         return (this.stationId == stationId && this.preStationId == stationId2) || (this.stationId == stationId2 && this.preStationId == stationId)
     }
 
-    fun updateFare(fare: Int) {
-        extraFare = fare
+    fun update(line: Line) {
+        extraFare = line.extraFare
+        startTime = line.startTime
+        endTime = line.endTime
+        intervalTime = line.intervalTime
     }
 }

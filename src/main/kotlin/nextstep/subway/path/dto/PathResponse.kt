@@ -1,5 +1,7 @@
 package nextstep.subway.path.dto
 
+import nextstep.subway.path.domain.TotalPrice
+
 class PathResponse(
         val stations: List<PathStationResponse>,
         val distance: Int,
@@ -11,6 +13,11 @@ class PathResponse(
 
     fun updateFare(price: Int) {
         this.fare = price
+    }
+
+    fun updateFareWithAge(age: Int) {
+        val totalPrice = TotalPrice.get(distance, fare, age)
+        updateFare(totalPrice)
     }
 
     companion object {
