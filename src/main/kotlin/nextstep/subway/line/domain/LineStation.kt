@@ -46,7 +46,9 @@ class LineStation(
     fun update(line: Line) {
         extraFare = line.extraFare
         startTime = line.startTime
+        reverseStartTime = line.startTime
         endTime = line.endTime
+        reverseEndTime = line.endTime
         intervalTime = line.intervalTime
     }
 
