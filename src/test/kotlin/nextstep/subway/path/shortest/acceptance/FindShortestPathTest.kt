@@ -164,7 +164,7 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(shortestPath.stations).hasSize(3)
     }
 
-    @DisplayName("가장 빠른 도착 경로 조회")
+    @DisplayName("reverse")
     @Test
     fun findFastestPath2() {
         // Given
@@ -184,7 +184,7 @@ class FindShortestPathTest : AcceptanceTest() {
                 .auth()
                 .oauth2(token.accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .`when`()["/paths/?source=${station1.id}&target=${station3.id}&type=ARRIVAL_TIME&time=202007220531"]
+                .`when`()["/paths/?source=${station3.id}&target=${station1.id}&type=ARRIVAL_TIME&time=202007220531"]
                 .then().log().all().extract()
 
         // Then
