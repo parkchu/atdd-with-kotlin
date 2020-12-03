@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain
 
+import nextstep.subway.path.shortest.domain.Paths.Companion.INF
 import java.time.LocalTime
 import javax.persistence.*
 
@@ -43,5 +44,30 @@ class LineStation(
         startTime = line.startTime
         endTime = line.endTime
         intervalTime = line.intervalTime
+    }
+
+    fun getDuration(time: LocalTime): Int {
+        val currentTime = changeMinute(time)
+        val startTime = changeMinute(startTime)
+        val endTime = changeMinute(endTime)
+        if (currentTime in startTime..endTime) {
+            return test2(currentTime, startTime)
+        }
+        return INF
+    }
+
+    private fun changeMinute(localTime: LocalTime): Int {
+        val hour = localTime.hour
+        val minute = localTime.minute
+        return hour * 60 + minute
+    }
+
+    private fun test2(currentTime: Int, startTime: Int): Int {
+        val remainder = (currentTime - startTime) % intervalTime
+        return if (remainder == 0) {
+            duration
+        } else {
+            duration + intervalTime - remainder
+        }
     }
 }
