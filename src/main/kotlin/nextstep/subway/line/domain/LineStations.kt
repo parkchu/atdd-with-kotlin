@@ -38,11 +38,30 @@ class LineStations {
             _lineStations.stream().filter { it.preStationId == lineStation.preStationId }.findFirst().ifPresent { it.updatePreStationTo(lineStation.stationId) }
         }
         _lineStations.add(lineStation)
+        arrangeTime()
     }
 
     private fun checkContains(lineStation: LineStation) {
         if (_lineStations.any { it.isSame(lineStation) }) {
             throw DataIntegrityViolationException("")
+        }
+    }
+
+    private fun arrangeTime() {
+        val lineStations = LineStationList()
+        arrangeLineStations(lineStations)
+        for (index in 1 until _lineStations.size) {
+            val preLineStation = lineStations.get(index - 1)
+            val lineStation = lineStations.get(index)
+            lineStation.startTime = preLineStation.startTime.plusMinutes(lineStation.duration.toLong())
+            lineStation.endTime = preLineStation.endTime.plusMinutes(lineStation.duration.toLong())
+        }
+        val reverseLineStations = lineStations.reverse()
+        for (index in 1 until _lineStations.size) {
+            val preLineStation = reverseLineStations.get(index - 1)
+            val lineStation = reverseLineStations.get(index)
+            lineStation.reverseStartTime = preLineStation.reverseStartTime.plusMinutes(preLineStation.duration.toLong())
+            lineStation.reverseEndTime = preLineStation.reverseEndTime.plusMinutes(preLineStation.duration.toLong())
         }
     }
 
@@ -54,5 +73,6 @@ class LineStations {
 
     fun update(line: Line) {
         _lineStations.forEach { it.update(line) }
+        arrangeTime()
     }
 }

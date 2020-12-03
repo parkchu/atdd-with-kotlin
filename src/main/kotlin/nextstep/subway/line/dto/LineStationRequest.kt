@@ -10,6 +10,6 @@ data class LineStationRequest(
         val duration: Int
 ) {
     fun toLineStation(line: Line): LineStation {
-        return LineStation(stationId, preStationId, distance, duration, line.extraFare, line.startTime, line.endTime, line.intervalTime)
+        return LineStation(stationId, preStationId, distance, duration, line.extraFare, line.startTime, line.startTime, line.endTime, line.endTime, line.intervalTime)
     }
 }

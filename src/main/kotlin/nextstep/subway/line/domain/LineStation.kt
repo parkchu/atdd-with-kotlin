@@ -20,9 +20,13 @@ class LineStation(
 
         var startTime: LocalTime = LocalTime.of(9, 0),
 
+        var reverseStartTime: LocalTime =  LocalTime.of(10, 0),
+
         var endTime: LocalTime = LocalTime.of(18, 0),
 
-        var intervalTime: Int = 0,
+        var reverseEndTime: LocalTime = LocalTime.of(19, 0),
+
+        var intervalTime: Int = 1,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
@@ -63,11 +67,18 @@ class LineStation(
     }
 
     private fun test2(currentTime: Int, startTime: Int): Int {
+        checkZero()
         val remainder = (currentTime - startTime) % intervalTime
         return if (remainder == 0) {
             duration
         } else {
             duration + intervalTime - remainder
+        }
+    }
+
+    private fun checkZero() {
+        if (intervalTime == 0) {
+            intervalTime = 1
         }
     }
 }
