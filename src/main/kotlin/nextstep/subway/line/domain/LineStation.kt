@@ -20,11 +20,11 @@ class LineStation(
 
         var startTime: LocalTime = LocalTime.of(9, 0),
 
-        var reverseStartTime: LocalTime =  LocalTime.of(10, 0),
+        var reverseStartTime: LocalTime = LocalTime.of(9, 0),
 
         var endTime: LocalTime = LocalTime.of(18, 0),
 
-        var reverseEndTime: LocalTime = LocalTime.of(19, 0),
+        var reverseEndTime: LocalTime = LocalTime.of(18, 0),
 
         var intervalTime: Int = 1,
         @Id
@@ -52,10 +52,17 @@ class LineStation(
         intervalTime = line.intervalTime
     }
 
-    fun getDuration(time: LocalTime): Int {
+    fun getDuration(time: LocalTime, isReverse: Boolean): Int {
         val currentTime = changeMinute(time)
-        val startTime = changeMinute(startTime)
-        val endTime = changeMinute(endTime)
+        val startTime: Int
+        val endTime: Int
+        if (isReverse) {
+            startTime = changeMinute(reverseStartTime)
+            endTime = changeMinute(reverseEndTime)
+        } else {
+            startTime = changeMinute(this.startTime)
+            endTime = changeMinute(this.endTime)
+        }
         if (currentTime in startTime..endTime) {
             return test2(currentTime, startTime)
         }

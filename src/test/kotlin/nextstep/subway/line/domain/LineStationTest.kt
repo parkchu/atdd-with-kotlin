@@ -11,7 +11,7 @@ class LineStationTest {
         val lineStation = LineStation(0, 0, 0, 10, 0, intervalTime = 10) // 출발시간은 9시 도착시간은 18시로 설정되어있다.
         val time = "1500"
 
-        val duration = lineStation.getDuration(changeLocalTime(time))
+        val duration = lineStation.getDuration(changeLocalTime(time), false)
 
         assertThat(duration).isEqualTo(10)
     }
@@ -21,7 +21,7 @@ class LineStationTest {
         val lineStation = LineStation(0, 0, 0, 10, 0, intervalTime = 7) // 출발시간은 9시 도착시간은 18시로 설정되어있다.
         val time = "1500"
 
-        val duration = lineStation.getDuration(changeLocalTime(time))
+        val duration = lineStation.getDuration(changeLocalTime(time), false)
 
         assertThat(duration).isEqualTo(14)
     }
@@ -31,7 +31,7 @@ class LineStationTest {
         val lineStation = LineStation(0, 0, 0, 10, 0, intervalTime = 7) // 출발시간은 9시 도착시간은 18시로 설정되어있다.
         val time = "1900"
 
-        val duration = lineStation.getDuration(changeLocalTime(time))
+        val duration = lineStation.getDuration(changeLocalTime(time), false)
 
         assertThat(duration).isEqualTo(INF)
     }

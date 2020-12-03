@@ -49,24 +49,27 @@ class LineStations {
 
     private fun arrangeTime() {
         val lineStations = LineStationList()
-        arrangeLineStations(lineStations)
-        for (index in 1 until _lineStations.size) {
+        if (_lineStations.isNotEmpty()) {
+            arrangeLineStations(lineStations)
+        }
+        for (index in 2 until _lineStations.size) {
             val preLineStation = lineStations.get(index - 1)
             val lineStation = lineStations.get(index)
-            lineStation.startTime = preLineStation.startTime.plusMinutes(lineStation.duration.toLong())
-            lineStation.endTime = preLineStation.endTime.plusMinutes(lineStation.duration.toLong())
+            lineStation.startTime = preLineStation.startTime.plusMinutes(preLineStation.duration.toLong())
+            lineStation.endTime = preLineStation.endTime.plusMinutes(preLineStation.duration.toLong())
         }
         val reverseLineStations = lineStations.reverse()
-        for (index in 1 until _lineStations.size) {
-            val preLineStation = reverseLineStations.get(index - 1)
-            val lineStation = reverseLineStations.get(index)
+        for (index in 1 until _lineStations.size - 1) {
+            val preLineStation = reverseLineStations[index - 1]
+            val lineStation = reverseLineStations[index]
             lineStation.reverseStartTime = preLineStation.reverseStartTime.plusMinutes(preLineStation.duration.toLong())
             lineStation.reverseEndTime = preLineStation.reverseEndTime.plusMinutes(preLineStation.duration.toLong())
         }
     }
 
     fun delete(stationId: Long) {
-        val deleteLineStation = _lineStations.find { it.stationId == stationId } ?: throw DataIntegrityViolationException("")
+        val deleteLineStation = _lineStations.find { it.stationId == stationId }
+                ?: throw DataIntegrityViolationException("")
         _lineStations.find { it.preStationId == stationId }?.updatePreStationTo(deleteLineStation.preStationId)
         _lineStations.removeIf { it.stationId == stationId }
     }

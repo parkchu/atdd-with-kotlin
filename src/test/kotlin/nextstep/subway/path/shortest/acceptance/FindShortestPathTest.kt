@@ -163,4 +163,36 @@ class FindShortestPathTest : AcceptanceTest() {
         assertThat(shortestPath.duration).isEqualTo(10)
         assertThat(shortestPath.stations).hasSize(3)
     }
+
+    @DisplayName("가장 빠른 도착 경로 조회")
+    @Test
+    fun findFastestPath2() {
+        // Given
+        val station1 = 등록한_지하철역정보_요청("카츄역")
+        val station2 = 등록한_지하철역정보_요청("주한역")
+        val station3 = 등록한_지하철역정보_요청("재성역")
+        val line2 = 등록한_노선정보_요청("2호선", "bg-red-600", "5", 300)
+        노선에_역_등록되어_있음(station1.id, line2.id, 10)
+        노선에_역_등록되어_있음(station2.id, line2.id, 10)
+        노선에_역_등록되어_있음(station3.id, line2.id, 10)
+        회원_등록되어_있음(FavoriteAcceptanceTest.EMAIL, FavoriteAcceptanceTest.PASSWORD, 6)
+        val token = 로그인_되어_있음(FavoriteAcceptanceTest.EMAIL, FavoriteAcceptanceTest.PASSWORD)
+
+        // When
+        val fastestResponse = RestAssured
+                .given().log().all()
+                .auth()
+                .oauth2(token.accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .`when`()["/paths/?source=${station1.id}&target=${station3.id}&type=ARRIVAL_TIME&time=202007220531"]
+                .then().log().all().extract()
+
+        // Then
+        val pathResponse = fastestResponse.`as`(PathResponse::class.java)
+        assertThat(fastestResponse.statusCode()).isEqualTo(HttpStatus.OK.value())
+        assertThat(pathResponse.distance).isEqualTo(20)
+        assertThat(pathResponse.duration).isEqualTo(24)
+        assertThat(pathResponse.stations).hasSize(3)
+        assertThat(pathResponse.fare).isEqualTo(1_050)
+    }
 }
