@@ -17,7 +17,12 @@ class PathStations {
         return pathStation
     }
 
-    fun getStations(): List<Station> {
+    fun removeStations(stations: MutableList<Station>): List<Station> {
+        stations.removeAll(getStations())
+        return stations
+    }
+
+    private fun getStations(): List<Station> {
         return _pathStations.map { it.station }
     }
 }

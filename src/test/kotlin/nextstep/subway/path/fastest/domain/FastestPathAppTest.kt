@@ -23,14 +23,14 @@ class FastestPathAppTest {
         val pathApp = FastestPathApp(lineStations, stations)
         val time = "1500"
 
-        val path = pathApp.getFastestPath(1, 4, time)
+        val path = pathApp.getFastestPath(listOf(1, 4), time)
 
         assertThat(path.getDistance()).isEqualTo(30)
         assertThat(path.getDuration(time)).isEqualTo(42)
     }
 
     @Test
-    fun findFastestPath2() {
+    fun findReverseFastestPath() {
         val stations = listOf(
                 Station("1", 1),
                 Station("2", 2),
@@ -46,7 +46,7 @@ class FastestPathAppTest {
         val pathApp = FastestPathApp(lineStations, stations)
         val time = "1500"
 
-        val path = pathApp.getFastestPath(4, 1, time)
+        val path = pathApp.getFastestPath(listOf(4, 1), time)
 
         assertThat(path.getDistance()).isEqualTo(30)
         assertThat(path.getDuration(time)).isEqualTo(42)

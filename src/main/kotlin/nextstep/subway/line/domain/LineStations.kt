@@ -52,13 +52,20 @@ class LineStations {
         if (_lineStations.isNotEmpty()) {
             arrangeLineStations(lineStations)
         }
+        setTimes(lineStations)
+        setReverseTimes(lineStations.reverse())
+    }
+
+    private fun setTimes(lineStations: LineStationList) {
         for (index in 2 until _lineStations.size) {
             val preLineStation = lineStations.get(index - 1)
             val lineStation = lineStations.get(index)
             lineStation.startTime = preLineStation.startTime.plusMinutes(preLineStation.duration.toLong())
             lineStation.endTime = preLineStation.endTime.plusMinutes(preLineStation.duration.toLong())
         }
-        val reverseLineStations = lineStations.reverse()
+    }
+
+    private fun setReverseTimes(reverseLineStations: List<LineStation>) {
         for (index in 1 until _lineStations.size - 1) {
             val preLineStation = reverseLineStations[index - 1]
             val lineStation = reverseLineStations[index]

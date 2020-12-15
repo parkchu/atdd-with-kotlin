@@ -65,7 +65,7 @@ class PathService @Autowired constructor(
 
     fun findFastestPath(stations: List<Long>, time: String): PathResponse {
         val fastestPathApp = FastestPathApp(lineStationRepository.findAll(), stationRepository.findAll())
-        val path = fastestPathApp.getFastestPath(stations.first(), stations.last(), time)
+        val path = fastestPathApp.getFastestPath(stations, time)
         return PathResponse(path.getStationsResponse(), path.getDistance(), path.getDuration(time), path.getFare())
     }
 }

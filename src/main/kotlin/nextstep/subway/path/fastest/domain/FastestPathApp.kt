@@ -4,13 +4,14 @@ import nextstep.subway.line.domain.LineStation
 import nextstep.subway.station.domain.Station
 
 class FastestPathApp(val lineStations: List<LineStation>, val stations: List<Station>) {
-    private val pathStations = PathStations()
-    private val paths = Paths()
 
-    fun getFastestPath(startStationId: Long, arrivalStationId: Long, time: String): FastestPath {
+    fun getFastestPath(stationIds: List<Long>, time: String): FastestPath {
+        val startStationId = stationIds.first()
+        val arrivalStationId = stationIds.last()
         checkCorrectValues(startStationId, arrivalStationId)
-        addStartStation(startStationId)
-        makePaths(arrivalStationId, startStationId)
+        val pathStations = PathStations()
+        pathStations.add(addStartStation(startStationId))
+        val paths = makePaths(stationIds, pathStations)
         return paths.getFastestPath(time)
     }
 
@@ -21,13 +22,15 @@ class FastestPathApp(val lineStations: List<LineStation>, val stations: List<Sta
         stations.find { it.id == arrivalStationId } ?: throw RuntimeException("도착역이 존재하지 않는 역일 경우")
     }
 
-    private fun addStartStation(startStationId: Long) {
+    private fun addStartStation(startStationId: Long): PathStation {
         val station = stations.find { it.id == startStationId } ?: throw RuntimeException("출발역이 존재하지 않는 역일 경우")
-        pathStations.add(PathStation(station, LineStation(startStationId, null, 0, 0), null))
+        return PathStation(station, LineStation(startStationId, null, 0, 0), null)
     }
 
-    private fun makePaths(arrivalStationId: Long, beforeStationId: Long) {
-        val stations = removeStations()
+    private fun makePaths(stationIds: List<Long>, pathStations: PathStations, paths: Paths = Paths()): Paths {
+        val beforeStationId = stationIds.first()
+        val arrivalStationId = stationIds.last()
+        val stations = pathStations.removeStations(stations.toMutableList())
         stations.forEach { station ->
             val filterLineStations = this.lineStations.filter { checkConnect(it, station.id, beforeStationId) }
             filterLineStations.forEach { lineStation ->
@@ -35,16 +38,11 @@ class FastestPathApp(val lineStations: List<LineStation>, val stations: List<Sta
                 if (station.id == arrivalStationId) {
                     paths.add(FastestPath(pathStations.pathStations))
                 } else {
-                    makePaths(arrivalStationId, station.id)
+                    makePaths(listOf(station.id, arrivalStationId), pathStations, paths)
                 }
             }
         }
-    }
-
-    private fun removeStations(): List<Station> {
-        val stations = this.stations.toMutableList()
-        stations.removeAll(pathStations.getStations())
-        return stations
+        return paths
     }
 
     private fun checkConnect(lineStation: LineStation, stationId: Long, beforeStationId: Long): Boolean {

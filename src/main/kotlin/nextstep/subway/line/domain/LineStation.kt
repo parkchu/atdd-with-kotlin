@@ -64,7 +64,7 @@ class LineStation(
             endTime = changeMinute(this.endTime)
         }
         if (currentTime in startTime..endTime) {
-            return test2(currentTime, startTime)
+            return getWaitingTime(currentTime, startTime) + duration
         }
         return INF
     }
@@ -75,13 +75,13 @@ class LineStation(
         return hour * 60 + minute
     }
 
-    private fun test2(currentTime: Int, startTime: Int): Int {
+    private fun getWaitingTime(currentTime: Int, startTime: Int): Int {
         checkZero()
         val remainder = (currentTime - startTime) % intervalTime
         return if (remainder == 0) {
-            duration
+            0
         } else {
-            duration + intervalTime - remainder
+            intervalTime - remainder
         }
     }
 
