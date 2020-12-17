@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain
 
+import nextstep.subway.path.shortest.domain.Paths.Companion.INF
+import java.time.LocalTime
 import javax.persistence.*
 
 @Entity
@@ -15,6 +17,16 @@ class LineStation(
         var duration: Int,
 
         var extraFare: Int = 0,
+
+        var startTime: LocalTime = LocalTime.of(9, 0),
+
+        var reverseStartTime: LocalTime = LocalTime.of(9, 0),
+
+        var endTime: LocalTime = LocalTime.of(18, 0),
+
+        var reverseEndTime: LocalTime = LocalTime.of(18, 0),
+
+        var intervalTime: Int = 1,
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long = 0
@@ -31,7 +43,51 @@ class LineStation(
         return (this.stationId == stationId && this.preStationId == stationId2) || (this.stationId == stationId2 && this.preStationId == stationId)
     }
 
-    fun updateFare(fare: Int) {
-        extraFare = fare
+    fun update(line: Line) {
+        extraFare = line.extraFare
+        startTime = line.startTime
+        reverseStartTime = line.startTime
+        endTime = line.endTime
+        reverseEndTime = line.endTime
+        intervalTime = line.intervalTime
+    }
+
+    fun getDuration(time: LocalTime, isReverse: Boolean): Int {
+        val currentTime = changeMinute(time)
+        val startTime: Int
+        val endTime: Int
+        if (isReverse) {
+            startTime = changeMinute(reverseStartTime)
+            endTime = changeMinute(reverseEndTime)
+        } else {
+            startTime = changeMinute(this.startTime)
+            endTime = changeMinute(this.endTime)
+        }
+        if (currentTime in startTime..endTime) {
+            return getWaitingTime(currentTime, startTime) + duration
+        }
+        return INF
+    }
+
+    private fun changeMinute(localTime: LocalTime): Int {
+        val hour = localTime.hour
+        val minute = localTime.minute
+        return hour * 60 + minute
+    }
+
+    private fun getWaitingTime(currentTime: Int, startTime: Int): Int {
+        checkZero()
+        val remainder = (currentTime - startTime) % intervalTime
+        return if (remainder == 0) {
+            0
+        } else {
+            intervalTime - remainder
+        }
+    }
+
+    private fun checkZero() {
+        if (intervalTime == 0) {
+            intervalTime = 1
+        }
     }
 }

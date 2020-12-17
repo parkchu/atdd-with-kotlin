@@ -38,6 +38,7 @@ class LineStations {
             _lineStations.stream().filter { it.preStationId == lineStation.preStationId }.findFirst().ifPresent { it.updatePreStationTo(lineStation.stationId) }
         }
         _lineStations.add(lineStation)
+        arrangeTime()
     }
 
     private fun checkContains(lineStation: LineStation) {
@@ -46,13 +47,42 @@ class LineStations {
         }
     }
 
+    private fun arrangeTime() {
+        val lineStations = LineStationList()
+        if (_lineStations.isNotEmpty()) {
+            arrangeLineStations(lineStations)
+        }
+        setTimes(lineStations)
+        setReverseTimes(lineStations.reverse())
+    }
+
+    private fun setTimes(lineStations: LineStationList) {
+        for (index in 2 until _lineStations.size) {
+            val preLineStation = lineStations.get(index - 1)
+            val lineStation = lineStations.get(index)
+            lineStation.startTime = preLineStation.startTime.plusMinutes(preLineStation.duration.toLong())
+            lineStation.endTime = preLineStation.endTime.plusMinutes(preLineStation.duration.toLong())
+        }
+    }
+
+    private fun setReverseTimes(reverseLineStations: List<LineStation>) {
+        for (index in 1 until _lineStations.size - 1) {
+            val preLineStation = reverseLineStations[index - 1]
+            val lineStation = reverseLineStations[index]
+            lineStation.reverseStartTime = preLineStation.reverseStartTime.plusMinutes(preLineStation.duration.toLong())
+            lineStation.reverseEndTime = preLineStation.reverseEndTime.plusMinutes(preLineStation.duration.toLong())
+        }
+    }
+
     fun delete(stationId: Long) {
-        val deleteLineStation = _lineStations.find { it.stationId == stationId } ?: throw DataIntegrityViolationException("")
+        val deleteLineStation = _lineStations.find { it.stationId == stationId }
+                ?: throw DataIntegrityViolationException("")
         _lineStations.find { it.preStationId == stationId }?.updatePreStationTo(deleteLineStation.preStationId)
         _lineStations.removeIf { it.stationId == stationId }
     }
 
-    fun updateFare(fare: Int) {
-        _lineStations.forEach { it.updateFare(fare) }
+    fun update(line: Line) {
+        _lineStations.forEach { it.update(line) }
+        arrangeTime()
     }
 }

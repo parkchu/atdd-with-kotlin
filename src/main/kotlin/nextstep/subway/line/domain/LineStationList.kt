@@ -16,4 +16,12 @@ class LineStationList {
     fun size(): Int = mutableList.size
 
     fun last(): LineStation = mutableList.last()
+
+    fun get(index: Int): LineStation {
+        return mutableList[index]
+    }
+
+    fun reverse(): List<LineStation> {
+        return mutableList.asReversed()
+    }
 }

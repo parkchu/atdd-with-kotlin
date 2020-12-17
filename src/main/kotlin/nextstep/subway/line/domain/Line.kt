@@ -36,7 +36,7 @@ class Line(
         this.endTime = updateLine.endTime
         this.intervalTime = updateLine.intervalTime
         this.extraFare = updateLine.extraFare
-        this.lineStations.updateFare(updateLine.extraFare)
+        this.lineStations.update(updateLine)
     }
 
     fun getLineStationResponse(stations: List<Station>): List<LineStationResponse> {

@@ -9,17 +9,17 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
 object LineAddStationStep {
-    fun 노선에_역_등록되어_있음(stationId: Long, lineId: Long): ExtractableResponse<Response> {
-        return 노선에_역_등록_요청(stationId, lineId)
+    fun 노선에_역_등록되어_있음(stationId: Long, lineId: Long, duration: Int = 10): ExtractableResponse<Response> {
+        return 노선에_역_등록_요청(stationId, lineId, duration = duration)
     }
 
-    fun 노선에_역_등록_요청(stationId: Long, lineId: Long, preStationId: Long? = null): ExtractableResponse<Response> {
+    fun 노선에_역_등록_요청(stationId: Long, lineId: Long, preStationId: Long? = null, duration: Int = 10): ExtractableResponse<Response> {
         val params: MutableMap<String, Long?> = HashMap()
         params["lineId"] = lineId
         params["preStationId"] = preStationId
         params["stationId"] = stationId
         params["distance"] = 10
-        params["duration"] = 10
+        params["duration"] = duration.toLong()
         return RestAssured
                 .given()
                 .log().all()
